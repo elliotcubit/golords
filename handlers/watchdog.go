@@ -6,6 +6,7 @@ import (
   "bufio"
   "os"
   "time"
+  "log"
 
   "github.com/bwmarrin/discordgo"
 )
@@ -76,7 +77,12 @@ func OnMessageDelete(s *discordgo.Session, m *discordgo.MessageDelete){
     return
   }
 
+  log.Printf("Regustered messagedelete event\n")
+
   wordHidden := containsBanWord(m.Content)
+
+  log.Printf("Content: %v", m.Content)
+  log.Printf("Wordhidden: %v", wordHidden)
 
   if wordHidden != "" {
     s.GuildMemberNickname(m.GuildID, "@me", "CancelBot")
