@@ -5,6 +5,7 @@ import (
   "os"
   "os/signal"
   "syscall"
+  "log"
 
   "golords/credentials"
   "golords/handlers"
@@ -12,23 +13,21 @@ import (
 )
 
 func main(){
-  fmt.Println("Loading golordsbot")
-  
-  creds, err := credentials.LoadCreds("cred.json")
+  log.Println("Loading golordsbot")
+
+  creds, err := credentials.LoadCreds()
   if err != nil {
-    panic("Problem reading json")
+    log.Fatal("Problem loading credentials")
   }
 
   dg, err := discordgo.New("Bot " + creds.Token)
   if err != nil {
-    fmt.Println("error creating Discord session,", err)
-    return
+    log.Fatalf("error creating Discord session: %v", err)
   }
 
   err = InitializeStoredData()
   if err != nil {
-    fmt.Println("Problem loading stored data %v", err)
-    return
+    log.Fatalf("error initializing data %v", err)
   }
 
   // Keep the last 20 messages cached.
@@ -41,17 +40,19 @@ func main(){
   // Open connection
   err = dg.Open()
   if err != nil {
-    fmt.Println("error opening connection,", err)
-    return
+    log.Fatalf("error while opening connection", err)
   }
 
-  // Listen for a ^C with syscall
+  // Let 'em know
   fmt.Println("Golords bot is alive. ^C exits.")
+
+  // Listen for a ^C with syscall
   sc := make(chan os.Signal, 1)
   signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
   <- sc
 
   fmt.Println("^C Registered. Beginning the shutdown routine.")
+  
   // Shut down nicely
   dg.Close()
 }

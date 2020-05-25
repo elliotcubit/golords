@@ -1,56 +1,80 @@
 package quotemanager
 
 import (
-  "io/ioutil"
   "os"
-  "encoding/json"
-  "math/rand"
-  "time"
+  "log"
+  "context"
+
+  "go.mongodb.org/mongo-driver/mongo"
+  "go.mongodb.org/mongo-driver/mongo/options"
+  "go.mongodb.org/mongo-driver/bson"
 )
 
 type Quote struct {
-  AddedBy   string `json:"addedBy"`
-  Text      string `json:"text"`
-  Timestamp string `json:"timestamp"`
+  AddedBy   string
+  Text      string
+  Timestamp string
 }
 
-type QuoteList []Quote
+var client mongo.Client
+var collection *mongo.Collection
 
-var loadedQuotes QuoteList
-
-func LoadQuoteList(fname string) error {
-  rand.Seed(time.Now().Unix())
-  jsonFile, err := os.Open(fname)
+func LoadQuoteList() error {
+  URI := os.Getenv("MONGO_URI")
+  if URI == "" {
+    log.Fatal("No URI found for MongoDB")
+  }
+  clientOptions := options.Client().ApplyURI(URI)
+  client, err := mongo.Connect(context.TODO(), clientOptions)
   if err != nil {
     return err
   }
-  defer jsonFile.Close()
-
-  byteValue, _ := ioutil.ReadAll(jsonFile)
-  err = json.Unmarshal(byteValue, &loadedQuotes)
+  err = client.Ping(context.TODO(), nil)
   if err != nil {
     return err
   }
+  log.Print("Successfully connected to MongoDB")
+  collection = client.Database("qmngr").Collection("qmngr")
 
   return nil
 }
 
-func WriteQuoteList() error {
-  file, err := json.Marshal(loadedQuotes)
-  if err != nil {
-    return err
-  }
-  err = ioutil.WriteFile("quotelist.json", file, 0666)
-  return err
-}
-
 func AddQuote(by string, text string, timestamp string){
   quote := Quote{AddedBy: by, Text: text, Timestamp: timestamp}
-  loadedQuotes = append(loadedQuotes, quote)
-  WriteQuoteList()
+  _, err := collection.InsertOne(context.TODO(), quote)
+  if err != nil {
+    log.Fatal("Problem pushing new quote to MongoDB")
+  }
 }
 
 func GetRandomQuote() Quote {
-  ind := rand.Intn(len(loadedQuotes))
-  return loadedQuotes[ind]
+  query := bson.D{
+    {"$sample", bson.D{
+      {"size", 1},
+    }},
+  }
+  cursor, err := collection.Aggregate(context.TODO(), mongo.Pipeline{query})
+  if err != nil {
+    log.Fatal(err)
+  }
+  var results[]bson.M
+  if err = cursor.All(context.TODO(), &results); err != nil {
+    log.Fatal(err)
+  }
+  var ret Quote
+  var ok bool
+  ret.AddedBy, ok = results[0]["addedby"].(string)
+  if !ok {
+    log.Fatal("Expected string from mongo results")
+  }
+  ret.Text, ok = results[0]["text"].(string)
+  if !ok {
+    log.Fatal("Expected string from mongo results")
+  }
+  ret.Timestamp, ok = results[0]["timestamp"].(string)
+  if !ok {
+    log.Fatal("Expected string from mongo results")
+  }
+
+  return ret
 }

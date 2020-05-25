@@ -2,32 +2,26 @@ package credentials
 
 import (
   "os"
-  "io/ioutil"
-  "encoding/json"
+  "errors"
 )
 
 // Struct storings credentials
 type Credentials struct {
-  Id     string `json:"client_id"`
-  Secret string `json:"client_secret"`
-  Token  string `json:"token"`
+  Id     string
+  Secret string
+  Token  string
 }
 
 // Returns credentials populated from a JSON filepath provided.
-func LoadCreds(fname string) (Credentials, error) {
+func LoadCreds() (Credentials, error) {
   var creds Credentials
 
-  jsonFile, err := os.Open(fname)
-  if err != nil {
-    return creds, err
-  }
-  defer jsonFile.Close()
+  creds.Id = os.Getenv("DISCORD_ID")
+  creds.Secret = os.Getenv("DISCORD_SECRET")
+  creds.Token = os.Getenv("DISCORD_TOKEN")
 
-  byteValue, _ := ioutil.ReadAll(jsonFile)
-  err = json.Unmarshal(byteValue, &creds)
-  if err != nil{
-    return creds, err
+  if creds.Id == "" || creds.Secret == "" || creds.Token == "" {
+    return creds, errors.New("Discord credentials not found in environment variables")
   }
-
   return creds, nil
 }

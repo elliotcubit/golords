@@ -6,7 +6,7 @@ import (
 )
 
 func InitializeStoredData() error {
-  err := quotemanager.LoadQuoteList("quotelist.json")
+  err := quotemanager.LoadQuoteList()
   if err != nil {
     return err
   }
