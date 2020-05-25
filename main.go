@@ -36,6 +36,7 @@ func main(){
   // Register handlers
   dg.AddHandler(handlers.OnMessageCreate)
   dg.AddHandler(handlers.OnMessageUpdate)
+  dg.AddHandler(handlers.OnMessageDelete)
 
   // Open connection
   err = dg.Open()
@@ -52,7 +53,7 @@ func main(){
   <- sc
 
   fmt.Println("^C Registered. Beginning the shutdown routine.")
-  
+
   // Shut down nicely
   dg.Close()
 }
