@@ -71,21 +71,14 @@ func OnMessageUpdate(s *discordgo.Session, mup *discordgo.MessageUpdate) {
   }
 }
 
+// TODO MessageDelete only sends an ID of the message seemingly
 func OnMessageDelete(s *discordgo.Session, m *discordgo.MessageDelete){
-  log.Printf("ID: %v", m.ID)
-  log.Printf("Member: m.Member")
-
   // Ignore ourself
   if m.Author == nil || m.Author.ID == s.State.User.ID {
     return
   }
 
-  log.Printf("Regustered messagedelete event\n")
-
   wordHidden := containsBanWord(m.Content)
-
-  log.Printf("Content: %v", m.Content)
-  log.Printf("Wordhidden: %v", wordHidden)
 
   if wordHidden != "" {
     s.GuildMemberNickname(m.GuildID, "@me", "CancelBot")
