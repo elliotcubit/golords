@@ -72,7 +72,8 @@ func OnMessageUpdate(s *discordgo.Session, mup *discordgo.MessageUpdate) {
 }
 
 func OnMessageDelete(s *discordgo.Session, m *discordgo.MessageDelete){
-  log.Printf("%+v\n", m)
+  log.Printf("ID: %v", m.ID)
+  log.Printf("Member: m.Member")
 
   // Ignore ourself
   if m.Author == nil || m.Author.ID == s.State.User.ID {
