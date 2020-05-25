@@ -6,7 +6,6 @@ import (
   "bufio"
   "os"
   "time"
-  "log"
 
   "github.com/bwmarrin/discordgo"
 )
