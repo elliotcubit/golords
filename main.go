@@ -23,13 +23,18 @@ func main(){
     return
   }
 
+  err = InitializeStoredData()
+  if err != nil {
+    fmt.Println("Problem loading stored data %v", err)
+    return
+  }
+
   // Keep the last 20 messages cached.
   dg.State.MaxMessageCount = 20
 
   // Register handlers
   dg.AddHandler(handlers.OnMessageCreate)
-
-  // dg.AddHandler(mainhandlers.OnMessageUpdate)
+  dg.AddHandler(handlers.OnMessageUpdate)
 
   // Open connection
   err = dg.Open()
@@ -44,6 +49,7 @@ func main(){
   signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
   <- sc
 
+  fmt.Println("^C Registered. Beginning the shutdown routine.")
   // Shut down nicely
   dg.Close()
 }

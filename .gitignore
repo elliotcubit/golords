@@ -1,2 +1,4 @@
 internaldocs.md
 cred.json
+*.txt
+!

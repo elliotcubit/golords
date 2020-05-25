@@ -15,6 +15,7 @@ func GetCreateFunctionMap() map[string]CreateHandler {
   res["!gq"] = HandleCreateGetQuote
   res["!getquote"] = HandleCreateGetQuote
   res["!ping"] = HandleCreatePing
+  res["!help"] = HandleHelp
 
   return res
 }
