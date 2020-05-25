@@ -12,6 +12,8 @@ import (
 )
 
 func main(){
+  fmt.Println("Loading golordsbot")
+  
   creds, err := credentials.LoadCreds("cred.json")
   if err != nil {
     panic("Problem reading json")
