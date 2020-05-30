@@ -29,7 +29,7 @@ func LoadBanWords(fname string) error{
 // Returns a banned word in the string or 0 if none
 func containsBanWord(query string) string {
   for _, s := range banWords {
-    if strings.Contains(query, s) {
+    if strings.Contains(strings.ToLower(query), s) {
       return s
     }
   }
