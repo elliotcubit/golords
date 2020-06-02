@@ -18,6 +18,13 @@ func HandleMakePoll(s *discordgo.Session, m *discordgo.MessageCreate){
     log.Println("Couldn't send message for the poll")
     return
   }
-  s.MessageReactionAdd(p.ChannelID, p.ID, "gamertime")
-  s.MessageReactionAdd(p.ChannelID, p.ID, "robertscalls")
+  err = s.MessageReactionAdd(p.ChannelID, p.ID, ":thinking:")
+  err2 := s.MessageReactionAdd(p.ChannelID, p.ID, ":robertscalls:")
+
+  if err != nil {
+    log.Println(err)
+  }
+  if err2 != nil {
+    log.Println(err2)
+  }
 }
