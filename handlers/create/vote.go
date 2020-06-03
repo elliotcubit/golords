@@ -22,9 +22,9 @@ func HandleMakePoll(s *discordgo.Session, m *discordgo.MessageCreate){
   err2 := s.MessageReactionAdd(p.ChannelID, p.ID, "<:robertscalls:533131034024214548>")
 
   if err != nil {
-    fmt.Println(err)
+    log.Println(err)
   }
   if err2 != nil {
-    fmt.Println(err)
+    log.Println(err)
   }
 }
