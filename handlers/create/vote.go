@@ -18,6 +18,13 @@ func HandleMakePoll(s *discordgo.Session, m *discordgo.MessageCreate){
     log.Println("Couldn't send message for the poll")
     return
   }
-  s.MessageReactionAdd(p.ChannelID, p.ID, "<:gamertime:533131012121821204>")
-  s.MessageReactionAdd(p.ChannelID, p.ID, "<:robertscalls:533131034024214548>")
+  err = s.MessageReactionAdd(p.ChannelID, p.ID, "<:gamertime:533131012121821204>")
+  err2 := s.MessageReactionAdd(p.ChannelID, p.ID, "<:robertscalls:533131034024214548>")
+
+  if err != nil {
+    fmt.Println(err)
+  }
+  if err2 != nil {
+    fmt.Println(err)
+  }
 }
