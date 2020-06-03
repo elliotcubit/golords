@@ -7,24 +7,17 @@ import (
 )
 
 func HandleMakePoll(s *discordgo.Session, m *discordgo.MessageCreate){
-  log.Println("Creating poll")
   data := strings.SplitN(m.Content, " ", 2)
   if len(data) == 1 {
     return
   }
 
-  p, err := s.ChannelMessageSend(m.ChannelID, data[1])
+  log.Println("Creating poll for \"%v\"", data[1])
+  p, err := s.ChannelMessageSend(m.ChannelID, "POLL: " + data[1])
   if err != nil {
     log.Println("Couldn't send message for the poll")
     return
   }
-  err = s.MessageReactionAdd(p.ChannelID, p.ID, "<:gamertime:533131012121821204")
-  err2 := s.MessageReactionAdd(p.ChannelID, p.ID, "<:robertscalls:533131034024214548")
-
-  if err != nil {
-    log.Println(err)
-  }
-  if err2 != nil {
-    log.Println(err)
-  }
+  s.MessageReactionAdd(p.ChannelID, p.ID, "<:gamertime:533131012121821204")
+  s.MessageReactionAdd(p.ChannelID, p.ID, "<:robertscalls:533131034024214548")
 }
