@@ -42,8 +42,8 @@ func formatSpell(spell go5e.Spell) string {
 		componentsPPrint,
 		spell.Duration,
 		classesPPrint,
-		spell.Desc[0],
-		spell.HigherLevel[0],
+		len(spell.Desc) > 0 ? spell.Desc[0] : "",
+		len(spell.HigherLevel) > 0 ? spell.HigherLevel[0] : "",
 	)
 }
 
