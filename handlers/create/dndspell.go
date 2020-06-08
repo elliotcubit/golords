@@ -33,6 +33,15 @@ func formatSpell(spell go5e.Spell) string {
     classesPPrint = classesPPrint + val.Name + " "
   }
 
+  descStr := ""
+  higherStr := ""
+
+  if len(spell.Desc > 0){
+    descStr = spell.Desc[0]
+  }
+  if len(spell.HigherLevel > 0){
+    higherStr = spell.HigherLevel[0]
+  }
 	return fmt.Sprintf(formatString,
 		spell.Name,
 		spell.Level,
@@ -42,8 +51,8 @@ func formatSpell(spell go5e.Spell) string {
 		componentsPPrint,
 		spell.Duration,
 		classesPPrint,
-		len(spell.Desc) > 0 ? spell.Desc[0] : "",
-		len(spell.HigherLevel) > 0 ? spell.HigherLevel[0] : "",
+		descStr,
+		higherStr,
 	)
 }
 
