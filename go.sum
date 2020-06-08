@@ -3,6 +3,10 @@ github.com/bwmarrin/discordgo v0.20.3 h1:AxjcHGbyBFSC0a3Zx5nDQwbOjU7xai5dXjRnZ0Y
 github.com/bwmarrin/discordgo v0.20.3/go.mod h1:O9S4p+ofTFwB02em7jkpkV8M3R0/PUVOwN61zSZ0r4Q=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/elliotcubit/go-5e-srd-api v0.0.0-20200608033412-d1debcd5e05a h1:02cKY5/PAkFVsjp3euNQNTy4nJpcg4iqpkUIskVYebA=
+github.com/elliotcubit/go-5e-srd-api v0.0.0-20200608033412-d1debcd5e05a/go.mod h1:IuENgDPe0P7LybaSI7kTSxF1n9lTxRb+atKN8xBKxUY=
+github.com/elliotcubit/go-5e-srd-api v0.0.0-20200608034321-767042cea9fe h1:/4HanTcjdUwZ0bte0SiVGq77qfBYgAc4KMv1qZgHEOE=
+github.com/elliotcubit/go-5e-srd-api v0.0.0-20200608034321-767042cea9fe/go.mod h1:IuENgDPe0P7LybaSI7kTSxF1n9lTxRb+atKN8xBKxUY=
 github.com/go-stack/stack v1.8.0 h1:5SgMzNM5HxrEjV0ww2lTmX6E2Izsfxas4+YHWRs3Lsk=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/gobuffalo/attrs v0.0.0-20190224210810-a9411de4debd/go.mod h1:4duuawTqi2wkkpB4ePgWMaai6/Kc6WEz83bhFwpHzj0=

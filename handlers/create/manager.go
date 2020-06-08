@@ -18,6 +18,7 @@ func GetCreateFunctionMap() map[string]CreateHandler {
   res["!help"] = HandleHelp
   res["!poll"] = HandleMakePoll
   res["!vote"] = HandleMakePoll
+  res["!spell"] = HandleGetSpell
 
   return res
 }
