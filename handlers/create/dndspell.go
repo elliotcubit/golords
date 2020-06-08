@@ -25,9 +25,9 @@ At Higher Levels: When you cast this spell using a spell slot of 3rd level or hi
 
 func formatSpell(spell go5e.Spell) string {
 
-	formatString := "%s\nLevel %d %s\nCasting Time: %s\nRange: %s\nComponents:%s\nDuration: %s\nClasses: %s\n%s\nAt Higher Levels: %s"
+	formatString := "%s\nLevel %d %s\nCasting Time: %s\nRange: %s\nComponents: %s\nDuration: %s\nClasses: %s\n%s\n%s"
 
-	componentsPPrint := strings.Join(spell.Components, " ") + " " + spell.Material
+	componentsPPrint := strings.Join(spell.Components, " ") + " (" + spell.Material + ")"
 
 	classesPPrint := ""
 
@@ -42,7 +42,7 @@ func formatSpell(spell go5e.Spell) string {
     descStr = spell.Desc[0]
   }
   if len(spell.HigherLevel) > 0{
-    higherStr = spell.HigherLevel[0]
+    higherStr = "At higher levels: " + spell.HigherLevel[0]
   }
 	return fmt.Sprintf(formatString,
 		spell.Name,
