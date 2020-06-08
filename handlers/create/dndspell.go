@@ -73,7 +73,7 @@ func HandleGetSpell(s *discordgo.Session, m *discordgo.MessageCreate) {
   }
 
 	// Sort with highest-first similarity based on Jaro-Winkler string distance
-	sort.SliceStable(searchResults, func(i, j int) bool {
+	sort.SliceStable(searchResults.Results, func(i, j int) bool {
 		return jwd.Calculate(data[1], searchResults.Results[i].Name) > jwd.Calculate(data[1], searchResults.Results[j].Name)
 	})
 
