@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"strings"
   "log"
+	"sort"
 
 	"github.com/bwmarrin/discordgo"
 	go5e "github.com/elliotcubit/go-5e-srd-api"
+	"github.com/toldjuuso/go-jaro-winkler-distance"
 )
 
 /*
@@ -69,6 +71,11 @@ func HandleGetSpell(s *discordgo.Session, m *discordgo.MessageCreate) {
     log.Println(err)
     return
   }
+
+	// Sort with highest-first similarity based on Jaro-Winkler string distance
+	sort.SliceStable(searchResults, func(i, j int) bool {
+		return jwd.Calculate(data[1], searchResults.Results[i].Name) > jwd.Calculate(data[1], searchResults.Results[j].Name)
+	})
 
   spellIndex := searchResults.Results[0].Index
 
