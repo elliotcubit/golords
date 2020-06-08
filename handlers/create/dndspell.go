@@ -36,10 +36,10 @@ func formatSpell(spell go5e.Spell) string {
   descStr := ""
   higherStr := ""
 
-  if len(spell.Desc > 0){
+  if len(spell.Desc) > 0{
     descStr = spell.Desc[0]
   }
-  if len(spell.HigherLevel > 0){
+  if len(spell.HigherLevel) > 0{
     higherStr = spell.HigherLevel[0]
   }
 	return fmt.Sprintf(formatString,
