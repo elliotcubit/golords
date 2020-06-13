@@ -10,7 +10,7 @@ import (
 func getResponses() []string {
     return []string{
       "It is certain.",
-      "It is decidedl so.",
+      "It is decidedly so.",
       "Without a doubt.",
       "Yes -- deifinitely.",
       "You may rely on it.",
