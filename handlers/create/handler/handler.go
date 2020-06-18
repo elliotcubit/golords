@@ -1,8 +1,6 @@
 package handler
 
 import (
-  "strings"
-  
   "github.com/bwmarrin/discordgo"
 )
 
@@ -25,15 +23,7 @@ type DefaultHandler struct {}
 
 func (h DefaultHandler) Do() {}
 func (h DefaultHandler) GetPrompts() []string { return nil }
-func (h DefaultHandler) Should(hint string) bool {
-  prompts := h.GetPrompts()
-  for _, v := range prompts {
-    if strings.HasPrefix(hint, v) {
-      return true
-    }
-  }
-  return false
-}
+func (h DefaultHandler) Should(hint string) bool { return false }
 func (h DefaultHandler) Help() string { return "" }
 
 /*

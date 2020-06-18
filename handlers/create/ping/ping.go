@@ -1,6 +1,8 @@
 package ping
 
 import (
+  "strings"
+  
   "golords/handlers/create/handler"
 
   "github.com/bwmarrin/discordgo"
@@ -24,4 +26,14 @@ func (h PingHandler) GetPrompts() []string {
 
 func (h PingHandler) Help() string {
   return "Check if the bot is running."
+}
+
+func (h PingHandler) Should(hint string) bool {
+  prompts := h.GetPrompts()
+  for _, v := range prompts {
+    if strings.HasPrefix(hint, v) {
+      return true
+    }
+  }
+  return false
 }
