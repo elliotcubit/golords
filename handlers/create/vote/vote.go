@@ -1,4 +1,4 @@
-package create
+package vote
 
 import (
   "github.com/bwmarrin/discordgo"

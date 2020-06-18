@@ -1,4 +1,4 @@
-package create
+package getquote
 
 import (
   "github.com/bwmarrin/discordgo"

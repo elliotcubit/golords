@@ -1,4 +1,4 @@
-package create
+package ball
 
 import (
   "math/rand"

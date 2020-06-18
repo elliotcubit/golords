@@ -1,4 +1,4 @@
-package create
+package help
 
 import (
   "github.com/bwmarrin/discordgo"

@@ -1,4 +1,4 @@
-package create
+package dndspell
 
 import (
 	"fmt"
