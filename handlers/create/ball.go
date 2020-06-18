@@ -2,7 +2,6 @@ package create
 
 import (
   "math/rand"
-  "time"
 
   "github.com/bwmarrin/discordgo"
 )
@@ -33,7 +32,6 @@ func getResponses() []string {
 }
 
 func HandleEightBall(s *discordgo.Session, m *discordgo.MessageCreate){
-  rand.Seed(time.Now().Unix())
   responses := getResponses()
   msg := responses[rand.Intn(len(responses))]
   s.ChannelMessageSend(m.ChannelID, msg)

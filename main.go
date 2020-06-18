@@ -6,6 +6,8 @@ import (
   "os/signal"
   "syscall"
   "log"
+  "math/rand"
+  "time"
 
   "golords/credentials"
   "golords/handlers"
@@ -43,6 +45,9 @@ func main(){
   if err != nil {
     log.Fatalf("error while opening connection", err)
   }
+
+  // Init RNG to start time.
+  rand.Seed(time.Now().Unix())
 
   // Let 'em know
   fmt.Println("Golords bot is alive. ^C exits.")
