@@ -2,9 +2,10 @@ package ball
 
 import (
   "math/rand"
+  "strings"
 
   "golords/handlers/create/handler"
-  
+
   "github.com/bwmarrin/discordgo"
 )
 

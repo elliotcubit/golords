@@ -11,19 +11,41 @@ import (
 
   "golords/handlers/create/handler"
 
+  "strings"
+
   "github.com/bwmarrin/discordgo"
 )
 
 func New() handler.CreateHandler {
-  return HelpHandler{}
+  return HelpHandler{
+    // TODO these should really just be pointers,
+    // And create.go should populate this list...
+    Handlers: []handler.CreateHandler{
+      addquote.New(),
+      ball.New(),
+      diceroll.New(),
+      dndspell.New(),
+      getquote.New(),
+      ping.New(),
+      vote.New(),
+    },
+  }
 }
 
 type HelpHandler struct {
   handler.DefaultHandler
+  Handlers []handler.CreateHandler
 }
 
 func (h HelpHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
+  str := "\nHelp:\n"
+  for _, module := range h.Handlers {
+    str = appendHelp(str, module)
+  }
+  // Put ourselves in there for shits and giggles
+  str = appendHelp(str, h)
 
+  s.ChannelMessageSend(m.ChannelID, str)
 }
 
 func (h HelpHandler) GetPrompts() []string {
@@ -44,15 +66,10 @@ func (h HelpHandler) Should(hint string) bool {
   return false
 }
 
-
-/*
-var helpStr = `Help:
-  !addquote/!aq: add quote to the library
-  !getquote/!qg: get a random quote from the library
-  !ping: Check if the bot is online
-  !help: Bring up this message`
-
-func HandleHelp(s *discordgo.Session, m *discordgo.MessageCreate){
-  s.ChannelMessageSend(m.ChannelID, helpStr)
+func appendHelp(base string, module handler.CreateHandler) string {
+  base += strings.Join(module.GetPrompts(), ", ")
+  base += ": "
+  base += module.Help()
+  base += "\n"
+  return base
 }
-*/

@@ -6,6 +6,7 @@ import (
   "golords/quotemanager"
   "fmt"
   "time"
+  "strings"
 )
 
 func New() handler.CreateHandler {

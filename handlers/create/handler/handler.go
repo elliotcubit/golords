@@ -25,25 +25,3 @@ func (h DefaultHandler) Do() {}
 func (h DefaultHandler) GetPrompts() []string { return nil }
 func (h DefaultHandler) Should(hint string) bool { return false }
 func (h DefaultHandler) Help() string { return "" }
-
-/*
-// Bind all commands to their handlers
-func GetCreateHandlers() []CreateHandler {
-  res := make(map[string]CreateHandler)
-
-  res["!aq"] = HandleCreateAddQuote
-  res["!addquote"] = HandleCreateAddQuote
-  res["!gq"] = HandleCreateGetQuote
-  res["!getquote"] = HandleCreateGetQuote
-  res["!ping"] = HandleCreatePing
-  res["!help"] = HandleHelp
-  res["!poll"] = HandleMakePoll
-  res["!vote"] = HandleMakePoll
-  res["!spell"] = HandleGetSpell
-  res["!8ball"] = HandleEightBall
-  res["!r"] = HandleDiceRoll
-  res["!goroll"] = HandleDiceRoll
-
-  return res
-}
-*/
