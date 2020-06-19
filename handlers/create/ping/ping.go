@@ -18,6 +18,11 @@ type PingHandler struct {
 
 func (h PingHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   s.ChannelMessageSend(m.ChannelID, "pong!")
+
+  // There should be a more-permanent, by-user option to do this
+  // in another module, but for now we will just set our name to
+  // something when we ping.
+  s.GuildMemberNickname(m.GuildID, "@me", "GolordBot")
 }
 
 func (h PingHandler) GetPrompts() []string {
