@@ -6,22 +6,69 @@ import (
   "log"
 	"sort"
 
+	"golords/handlers/create/handler"
+
 	"github.com/bwmarrin/discordgo"
 	go5e "github.com/elliotcubit/go-5e-srd-api"
 	"github.com/toldjuuso/go-jaro-winkler-distance"
 )
 
-/*
-Acid Arrow
-2nd level evocation
-Casting Time: 1 action
-Range: 90 feet
-Components: V S M (Powdered rhubarb leaf and an adder's stomach)
-Duration: Instantaneous
-Classes: Wizard
-A shimmering green arrow streaks toward a target within range and bursts in a spray of acid. Make a ranged spell attack against the target. On a hit, the target takes 4d4 acid damage immediately and 2d4 acid damage at the end of its next turn. On a miss, the arrow splashes the target with acid for half as much of the initial damage and no damage at the end of its next turn.
-At Higher Levels: When you cast this spell using a spell slot of 3rd level or higher, the damage (both initial and later) increases by 1d4 for each slot level above 2nd.
-*/
+func New() handler.CreateHandler {
+  return SpellHandler{}
+}
+
+type SpellHandler struct {
+  handler.DefaultHandler
+}
+
+func (h SpellHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
+	data := strings.SplitN(m.Content, " ", 2)
+	if len(data) == 1 {
+		return
+	}
+
+  query := strings.ReplaceAll(data[1], " ", "+")
+
+  searchResults, err := go5e.SearchSpellName(query)
+  if err != nil || searchResults.Count < 1 {
+    log.Println(err)
+    return
+  }
+
+	// Sort with highest-first similarity based on Jaro-Winkler string distance
+	sort.SliceStable(searchResults.Results, func(i, j int) bool {
+		return jwd.Calculate(data[1], searchResults.Results[i].Name) > jwd.Calculate(data[1], searchResults.Results[j].Name)
+	})
+
+  spellIndex := searchResults.Results[0].Index
+
+  spell, err := go5e.GetSpell(spellIndex)
+  if err != nil {
+    log.Println(err)
+    return
+  }
+
+  s.ChannelMessageSend(m.ChannelID, formatSpell(spell))
+}
+
+func (h SpellHandler) GetPrompts() []string {
+  return []string{"!spell"}
+}
+
+func (h SpellHandler) Help() string {
+  return "Get information about a 5e spell"
+}
+
+func (h SpellHandler) Should(hint string) bool {
+  prompts := h.GetPrompts()
+  for _, v := range prompts {
+    if strings.HasPrefix(hint, v) {
+      return true
+    }
+  }
+  return false
+}
+
 
 func formatSpell(spell go5e.Spell) string {
 
@@ -56,34 +103,4 @@ func formatSpell(spell go5e.Spell) string {
 		descStr,
 		higherStr,
 	)
-}
-
-func HandleGetSpell(s *discordgo.Session, m *discordgo.MessageCreate) {
-	data := strings.SplitN(m.Content, " ", 2)
-	if len(data) == 1 {
-		return
-	}
-
-  query := strings.ReplaceAll(data[1], " ", "+")
-
-  searchResults, err := go5e.SearchSpellName(query)
-  if err != nil || searchResults.Count < 1 {
-    log.Println(err)
-    return
-  }
-
-	// Sort with highest-first similarity based on Jaro-Winkler string distance
-	sort.SliceStable(searchResults.Results, func(i, j int) bool {
-		return jwd.Calculate(data[1], searchResults.Results[i].Name) > jwd.Calculate(data[1], searchResults.Results[j].Name)
-	})
-
-  spellIndex := searchResults.Results[0].Index
-
-  spell, err := go5e.GetSpell(spellIndex)
-  if err != nil {
-    log.Println(err)
-    return
-  }
-
-  s.ChannelMessageSend(m.ChannelID, formatSpell(spell))
 }

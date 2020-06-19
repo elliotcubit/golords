@@ -3,6 +3,8 @@ package ball
 import (
   "math/rand"
 
+  "golords/handlers/create/handler"
+  
   "github.com/bwmarrin/discordgo"
 )
 
@@ -31,8 +33,34 @@ func getResponses() []string {
     }
 }
 
-func HandleEightBall(s *discordgo.Session, m *discordgo.MessageCreate){
+func New() handler.CreateHandler {
+  return BallHandler{}
+}
+
+type BallHandler struct {
+  handler.DefaultHandler
+}
+
+func (h BallHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   responses := getResponses()
   msg := responses[rand.Intn(len(responses))]
   s.ChannelMessageSend(m.ChannelID, msg)
+}
+
+func (h BallHandler) GetPrompts() []string {
+  return []string{"!8ball"}
+}
+
+func (h BallHandler) Help() string {
+  return "Ask magic 8 ball a question"
+}
+
+func (h BallHandler) Should(hint string) bool {
+  prompts := h.GetPrompts()
+  for _, v := range prompts {
+    if strings.HasPrefix(hint, v) {
+      return true
+    }
+  }
+  return false
 }

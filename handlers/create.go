@@ -1,16 +1,30 @@
 package handlers
 
 import (
-  "fmt"
-  
   "golords/handlers/create/handler"
+  "golords/handlers/create/addquote"
+  "golords/handlers/create/ball"
+  "golords/handlers/create/diceroll"
+  "golords/handlers/create/dndspell"
+  "golords/handlers/create/getquote"
+  "golords/handlers/create/help"
   "golords/handlers/create/ping"
+  "golords/handlers/create/vote"
+  
   "github.com/bwmarrin/discordgo"
 )
 
 // Does this syntax even work?
 var commandPrompts = [] handler.CreateHandler{
+  addquote.New(),
+  ball.New(),
+  diceroll.New(),
+  dndspell.New(),
+  getquote.New(),
+  help.New(),
   ping.New(),
+  vote.New(),
+  //youtube.New(),
 }
 
 func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -19,13 +33,9 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
     return
   }
 
-  fmt.Println("In message create")
-
   // Run appropriate command, if there is one
   for _, handler := range commandPrompts {
-    fmt.Printf("Checking %v\n", handler)
     if handler.Should(m.Content) {
-      fmt.Println("Should")
       handler.Do(s, m)
     }
   }

@@ -2,7 +2,7 @@ package ping
 
 import (
   "strings"
-  
+
   "golords/handlers/create/handler"
 
   "github.com/bwmarrin/discordgo"
@@ -25,7 +25,7 @@ func (h PingHandler) GetPrompts() []string {
 }
 
 func (h PingHandler) Help() string {
-  return "Check if the bot is running."
+  return "Check if the bot is running"
 }
 
 func (h PingHandler) Should(hint string) bool {
