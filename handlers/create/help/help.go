@@ -20,6 +20,7 @@ func New() handler.CreateHandler {
   return HelpHandler{
     // TODO these should really just be pointers,
     // And create.go should populate this list...
+    // Storing these twice in memory is a little stupid.
     Handlers: []handler.CreateHandler{
       addquote.New(),
       ball.New(),
