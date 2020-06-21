@@ -42,7 +42,7 @@ func Do(query string) string {
     return ""
   }
 
-  err = executeDq(dq)
+  err = executeDq(dq) // 
   if err != nil {
     return ""
   }
