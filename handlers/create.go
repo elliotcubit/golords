@@ -10,7 +10,7 @@ import (
   "golords/handlers/create/help"
   "golords/handlers/create/ping"
   "golords/handlers/create/vote"
-  
+
   "github.com/bwmarrin/discordgo"
 )
 
@@ -32,6 +32,8 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
   if m.Author.ID == s.State.User.ID {
     return
   }
+
+  // ignore jon lol
 
   // Run appropriate command, if there is one
   for _, handler := range commandPrompts {

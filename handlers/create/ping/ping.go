@@ -4,6 +4,7 @@ import (
   "strings"
 
   "golords/handlers/create/handler"
+  "log"
 
   "github.com/bwmarrin/discordgo"
 )
@@ -18,6 +19,9 @@ type PingHandler struct {
 
 func (h PingHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   s.ChannelMessageSend(m.ChannelID, "pong!")
+
+  // Doubles as a debug message for communicating
+  log.Println(m.Author.ID)
 
   // There should be a more-permanent, by-user option to do this
   // in another module, but for now we will just set our name to
