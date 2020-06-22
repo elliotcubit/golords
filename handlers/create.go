@@ -14,6 +14,10 @@ import (
   "github.com/bwmarrin/discordgo"
 )
 
+const (
+  JON_UUID = "202565623790698498"
+)
+
 // Does this syntax even work?
 var commandPrompts = [] handler.CreateHandler{
   addquote.New(),
@@ -34,6 +38,9 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
   }
 
   // ignore jon lol
+  if m.Author.ID == JON_UUID {
+    return
+  }
 
   // Run appropriate command, if there is one
   for _, handler := range commandPrompts {
