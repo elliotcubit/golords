@@ -15,7 +15,7 @@ import (
 )
 
 const (
-  JON_UUID = "202565623790698498"
+  RULEBREAKER_UUID = "724433548567773235"
 )
 
 // Does this syntax even work?
@@ -37,10 +37,16 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
     return
   }
 
-  // ignore jon lol
-  if m.Author.ID == JON_UUID {
-    return
+  // Ignore the rulebreaker role,
+  // TODO set this to be configurable to
+  // different roles.
+  roles := m.Member.Roles
+  for i := 0; i < len(roles); i++ {
+    if roles[i] == RULEBREAKER_UUID {
+      return
+    }
   }
+
 
   // Run appropriate command, if there is one
   for _, handler := range commandPrompts {
