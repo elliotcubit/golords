@@ -3,7 +3,7 @@ package dndlookup
 import (
   // "strings"
   "log"
-  // "fmt"
+  "fmt"
 
   go5e "github.com/elliotcubit/go-5e-srd-api"
 )
@@ -24,5 +24,11 @@ func doSkill(query string) string {
 }
 
 func formatSkill(res go5e.Skill) string {
-  return res.Name
+  formatString := "%s\n%s\nAbility score: %s"
+
+  return fmt.Sprintf(formatString,
+    res.Name,
+    res.Desc[0],
+    res.AbilityScore.Name,
+  )
 }

@@ -3,7 +3,7 @@ package dndlookup
 import (
   // "strings"
   "log"
-  // "fmt"
+  "fmt"
 
   go5e "github.com/elliotcubit/go-5e-srd-api"
 )
@@ -24,5 +24,12 @@ func doEquipment(query string) string {
 }
 
 func formatEquipment(res go5e.Equipment) string {
-  return res.Name
+  formatString := "%s\nCost: %d%s\nWeight: %s\n"
+
+  return fmt.Sprintf(formatString,
+    res.Name,
+    res.Cost.Quantity,
+    res.Cost.Unit,
+    res.Weight,
+  )
 }

@@ -3,7 +3,7 @@ package dndlookup
 import (
   // "strings"
   "log"
-  // "fmt"
+  "fmt"
 
   go5e "github.com/elliotcubit/go-5e-srd-api"
 )
@@ -23,6 +23,13 @@ func doLanguage(query string) string {
   return formatLanguage(spell)
 }
 
+// TODO typical speakers
 func formatLanguage(res go5e.Language) string {
-  return res.Name
+  formatString := "%s\nType: %s\nScript: %s\n"
+
+  return fmt.Sprintf(formatString,
+    res.Name,
+    res.Type,
+    res.Script,
+  )
 }

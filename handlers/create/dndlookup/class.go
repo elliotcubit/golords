@@ -3,7 +3,7 @@ package dndlookup
 import (
   // "strings"
   "log"
-  // "fmt"
+  "fmt"
 
   go5e "github.com/elliotcubit/go-5e-srd-api"
 )
@@ -24,5 +24,10 @@ func doClass(query string) string {
 }
 
 func formatClass(res go5e.Class) string {
-  return res.Name
+  formatString := "%s\n%sHit Die: %d\n"
+
+  return fmt.Sprintf(formatString,
+    res.Name,
+    res.HitDie,
+  )
 }

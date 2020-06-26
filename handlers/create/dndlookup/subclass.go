@@ -3,7 +3,7 @@ package dndlookup
 import (
   // "strings"
   "log"
-  // "fmt"
+  "fmt"
 
   go5e "github.com/elliotcubit/go-5e-srd-api"
 )
@@ -23,6 +23,14 @@ func doSubclass(query string) string {
   return formatSubclass(spell)
 }
 
+// TODO features ?
 func formatSubclass(res go5e.Subclass) string {
-  return res.Name
+  formatString := "%s\nClass: %s\nFlavour: %s\n%s"
+
+  return fmt.Sprintf(formatString,
+    res.Name,
+    res.Class.Name,
+    res.SubclassFlavour,
+    res.Desc[0],
+  )
 }

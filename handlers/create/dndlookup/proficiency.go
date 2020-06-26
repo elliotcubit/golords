@@ -3,7 +3,7 @@ package dndlookup
 import (
   // "strings"
   "log"
-  // "fmt"
+  "fmt"
 
   go5e "github.com/elliotcubit/go-5e-srd-api"
 )
@@ -23,6 +23,12 @@ func doProficiency(query string) string {
   return formatProficiency(spell)
 }
 
+// TODO classes / races
 func formatProficiency(res go5e.Proficiency) string {
-  return res.Name
+  formatString := "%s\nType: %s\n"
+
+  return fmt.Sprintf(formatString,
+    res.Name,
+    res.Type,
+  )
 }

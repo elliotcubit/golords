@@ -3,7 +3,7 @@ package dndlookup
 import (
   // "strings"
   "log"
-  // "fmt"
+  "fmt"
 
   go5e "github.com/elliotcubit/go-5e-srd-api"
 )
@@ -24,5 +24,14 @@ func doRace(query string) string {
 }
 
 func formatRace(res go5e.Race) string {
-  return res.Name
+  formatString := "%s\nSpeed: %d\nAge: %s\n Size: %s\n SizeDescription: %s\n Languages: %s"
+
+  return fmt.Sprintf(formatString,
+    res.Name,
+    res.Speed,
+    res.Age,
+    res.Size,
+    res.SizeDescription,
+    res.LanguageDesc,
+  )
 }

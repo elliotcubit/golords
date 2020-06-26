@@ -3,7 +3,7 @@ package dndlookup
 import (
   // "strings"
   "log"
-  // "fmt"
+  "fmt"
 
   go5e "github.com/elliotcubit/go-5e-srd-api"
 )
@@ -24,5 +24,30 @@ func doMonster(query string) string {
 }
 
 func formatMonster(res go5e.Monster) string {
-  return res.Name
+  formatString := `""` +
+    `"%s\n"`+
+    `"HitPoints: %d\n"`+
+    `"HitDice: %s\n"`+
+    `"AC: %d\n"`+
+    `"CR: %d\n"`+
+    `"Strength: %d\n"`+
+    `"Dexterity: %d\n"`+
+    `"Constitution: %d\n"`+
+    `"Intelligence: %d\n"`+
+    `"Wisdom: %d\n"`+
+    `"Charisma: %d\n"`
+
+  return fmt.Sprintf(formatString,
+    res.Name,
+    res.HitPoints,
+    res.HitDice,
+    res.ArmorClass,
+    res.ChallengeRating,
+    res.Strength,
+    res.Dexterity,
+    res.Constitution,
+    res.Intelligence,
+    res.Wisdom,
+    res.Charisma,
+  )
 }

@@ -3,7 +3,7 @@ package dndlookup
 import (
   // "strings"
   "log"
-  // "fmt"
+  "fmt"
 
   go5e "github.com/elliotcubit/go-5e-srd-api"
 )
@@ -23,6 +23,14 @@ func doSubrace(query string) string {
   return formatSubrace(spell)
 }
 
+// TODO more info is available from api
 func formatSubrace(res go5e.Subrace) string {
-  return res.Name
+  formatString := "%s\nRace: %s\nLanguages: %s\n%s"
+
+  return fmt.Sprintf(formatString,
+    res.Name,
+    res.Race.Name,
+    res.LanguageDesc,
+    res.Desc,
+  )
 }
