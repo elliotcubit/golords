@@ -5,7 +5,7 @@ import (
   "golords/handlers/create/addquote"
   "golords/handlers/create/ball"
   "golords/handlers/create/diceroll"
-  "golords/handlers/create/dndspell"
+  "golords/handlers/create/dndlookup"
   "golords/handlers/create/getquote"
   "golords/handlers/create/help"
   "golords/handlers/create/ping"
@@ -23,11 +23,11 @@ var commandPrompts = [] handler.CreateHandler{
   addquote.New(),
   ball.New(),
   diceroll.New(),
-  dndspell.New(),
   getquote.New(),
   help.New(),
   ping.New(),
   vote.New(),
+  dndlookup.New(),
   //youtube.New(),
 }
 

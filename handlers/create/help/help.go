@@ -4,7 +4,7 @@ import (
   "golords/handlers/create/addquote"
   "golords/handlers/create/ball"
   "golords/handlers/create/diceroll"
-  "golords/handlers/create/dndspell"
+  "golords/handlers/create/dndlookup"
   "golords/handlers/create/getquote"
   "golords/handlers/create/ping"
   "golords/handlers/create/vote"
@@ -25,10 +25,10 @@ func New() handler.CreateHandler {
       addquote.New(),
       ball.New(),
       diceroll.New(),
-      dndspell.New(),
       getquote.New(),
       ping.New(),
       vote.New(),
+      dndlookup.New(),
     },
   }
 }
