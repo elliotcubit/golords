@@ -24,7 +24,7 @@ func doClass(query string) string {
 }
 
 func formatClass(res go5e.Class) string {
-  formatString := "%s\n%sHit Die: %d\n"
+  formatString := "%d\n%sHit Die: %s\n"
 
   return fmt.Sprintf(formatString,
     res.Name,
