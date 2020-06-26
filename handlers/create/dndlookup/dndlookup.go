@@ -64,6 +64,8 @@ func (d DndLookup) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     out = doTrait(data[2])
   case "weaponproperty":
     out = doWeaponProperty(data[2])
+  case "endpoints":
+    out = strings.Join(go5e.Endpoints(), ", ")
   }
 
   // Any error that occurs in a handler will not be

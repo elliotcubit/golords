@@ -24,7 +24,7 @@ func doMonster(query string) string {
 }
 
 func formatMonster(res go5e.Monster) string {
-  formatString := "%s\nHitPoints: %d\nHitDice: %s\nAC: %d\n"CR: %d\n"Strength: %d\nDexterity: %d\nConstitution: %d\nIntelligence: %d\nWisdom: %d\nCharisma: %d\n"
+  formatString := "%s\nHitPoints: %d\nHitDice: %s\nAC: %d\nCR: %d\nStrength: %d\nDexterity: %d\nConstitution: %d\nIntelligence: %d\nWisdom: %d\nCharisma: %d\n"
 
   return fmt.Sprintf(formatString,
     res.Name,
