@@ -24,7 +24,7 @@ func doEquipment(query string) string {
 }
 
 func formatEquipment(res go5e.Equipment) string {
-  formatString := "%s\nCost: %d%s\nWeight: %s\n"
+  formatString := "%s\nCost: %d%s\nWeight: %d\n"
 
   return fmt.Sprintf(formatString,
     res.Name,
