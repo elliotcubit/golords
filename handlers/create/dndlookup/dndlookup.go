@@ -5,6 +5,7 @@ import (
 
   "github.com/bwmarrin/discordgo"
   "golords/handlers/create/handler"
+  go5e "github.com/elliotcubit/go-5e-srd-api"
 )
 
 func New() handler.CreateHandler {
