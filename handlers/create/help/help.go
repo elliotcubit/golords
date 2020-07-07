@@ -8,6 +8,7 @@ import (
   "golords/handlers/create/getquote"
   "golords/handlers/create/ping"
   "golords/handlers/create/vote"
+  "golords/handlers/create/anim"
 
   "golords/handlers/create/handler"
 
@@ -29,6 +30,7 @@ func New() handler.CreateHandler {
       ping.New(),
       vote.New(),
       dndlookup.New(),
+      anim.New(),
     },
   }
 }
