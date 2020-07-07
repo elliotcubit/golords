@@ -35,7 +35,7 @@ func (h AnimHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
 
     for iter := range getCycle(data[1]) {
         s.ChannelMessageEdit(chanID, msgID, iter)
-        time.Sleep(1000 * time.Millisecond)
+        time.Sleep(100 * time.Millisecond)
     }
 
     s.ChannelMessageEdit(chanID, msgID, data[1])
