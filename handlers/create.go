@@ -10,7 +10,7 @@ import (
   "golords/handlers/create/help"
   "golords/handlers/create/ping"
   "golords/handlers/create/vote"
-  "golords/handlers/create/anim"
+  // "golords/handlers/create/anim"
 
   "github.com/bwmarrin/discordgo"
 )
