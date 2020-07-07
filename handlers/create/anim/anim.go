@@ -3,6 +3,7 @@ package anim
 import (
   "strings"
   "fmt"
+  "time"
 
   "golords/handlers/create/handler"
   "github.com/bwmarrin/discordgo"
@@ -34,6 +35,7 @@ func (h AnimHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
 
     for iter := range getCycle(data[1]) {
         s.ChannelMessageEdit(chanID, msgID, iter)
+        time.Sleep(500 * time.Millisecond)
     }
 
     s.ChannelMessageEdit(chanID, msgID, data[1])
@@ -71,7 +73,7 @@ func cycle(channel chan string, seed string) {
     left := seed[0:numLeft]
     right := seed[i:i+numRight]
 
-    formatString := fmt.Sprintf("%%s%%%ds", i - numLeft + numRight)
+    formatString := fmt.Sprintf("`%%s%%%ds`", i - numLeft + numRight)
 
     channel <- fmt.Sprintf(formatString, left, right)
 
