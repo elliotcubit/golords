@@ -29,7 +29,7 @@ var commandPrompts = [] handler.CreateHandler{
   ping.New(),
   vote.New(),
   dndlookup.New(),
-  anim.New(),
+  // anim.New(),
   //youtube.New(),
 }
 
