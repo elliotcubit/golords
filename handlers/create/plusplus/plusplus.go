@@ -2,7 +2,7 @@ package plusplus
 
 import (
   "strings"
-  "log"
+  "fmt"
 
   pp "golords/plusplus"
   "golords/handlers/create/handler"
@@ -19,54 +19,79 @@ type PlusHandler struct {
 }
 
 func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
-  // Do() here is responsible for determining what needs to be done
-  // It will be run for every message.
-  if !strings.Contains(m.Content, "!db"){
+  // Must mention someone to invoke
+  if len(m.Mentions) == 0 {
     return
   }
 
-  log.Println("Testing")
+  inc := strings.Contains(m.Content, "++")
+  dec := strings.Contains(m.Content, "--")
 
-  score, _ := pp.MinusMinus("test_account")
-  log.Printf("User test_account has score %d now", score)
-  // 5
-  score, _ = pp.MinusMinus("test_account")
-  log.Printf("User test_account has score %d now", score)
-  // 4
-  score, _ = pp.MinusMinus("test_account")
-  log.Printf("User test_account has score %d now", score)
-  // 3
-  score, _ = pp.MinusMinus("test_account")
-  log.Printf("User test_account has score %d now", score)
-  // 2
-  score, _ = pp.MinusMinus("test_account")
-  log.Printf("User test_account has score %d now", score)
-  // 1
-  score, _ = pp.MinusMinus("test_account")
-  log.Printf("User test_account has score %d now", score)
-  // 0
-  score, _ = pp.MinusMinus("test_account")
-  log.Printf("User test_account has score %d now", score)
-  // -1
-  score, _ = pp.MinusMinus("test_account")
-  log.Printf("User test_account has score %d now", score)
-  // -2
-  score, _ = pp.PlusPlus("test_account")
-  log.Printf("User test_account has score %d now", score)
-  // -1
-  score, _ = pp.PlusPlus("test_account")
-  log.Printf("User test_account has score %d now", score)
+  // Do not allow increment and decrement in same operation
+  // for simplicity - we will need to do a lot of parsing to
+  // add syntax like @someone ++ @someonelse --
 
-  /*
-  score, err := pp.PlusPlus("test_account")
-  if err != nil {
-    // This will happen if mongo is broken somehow
+  // NOT XOR lol
+  if inc == dec {
     return
-  } else {
-    // score will contain their _updated_ score!
-    log.Println(score)
   }
-  */
+
+  outStr := ""
+
+  if inc {
+    for _, user := range m.Mentions {
+      if user.ID == m.Author.ID {
+        // Nice try, buckwheat
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        score, _ := pp.MinusMinus(user.String())
+        outStr = outStr + fmt.Sprintf("%v has lost 10 stacks for being a sleazy d-bag. They now have %d.\n", user.String(), score)
+        continue
+      }
+      score, err := pp.PlusPlus(user.String())
+      if err != nil {
+        // Mongo machine broke
+        return
+      }
+      outStr = outStr + fmt.Sprintf("%v now has %d stacks\n", user.String(), score)
+    }
+  }
+
+  if dec {
+    for _, user := range m.Mentions {
+      if user.ID == m.Author.ID {
+        // Nice try, buckwheat
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        pp.MinusMinus(user.String())
+        score, _ := pp.MinusMinus(user.String())
+        outStr = outStr + fmt.Sprintf("%v has lost 10 stacks for being a sleazy d-bag. They now have %d.\n", user.String(), score)
+        continue
+      }
+      score, err := pp.MinusMinus(user.String())
+      if err != nil {
+        // Mongo machine broke
+        return
+      }
+      outStr = outStr + fmt.Sprintf("%v now has %d stacks\n", user.String(), score)
+    }
+  }
+
+  // Send what is hopefully not an enormous message
+  s.ChannelMessageSend(m.ChannelID, outStr)
 }
 
 func (h PlusHandler) GetPrompts() []string {
@@ -78,5 +103,6 @@ func (h PlusHandler) Help() string {
 }
 
 func (h PlusHandler) Should(hint string) bool {
+  // Always call Do() from the handler
   return true
 }
