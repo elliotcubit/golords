@@ -18,12 +18,10 @@ type PlusHandler struct {
   handler.DefaultHandler
 }
 
-func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
-  // Must mention someone to invoke
-  if len(m.Mentions) == 0 {
-    return
-  }
+// The most recently added-to message
+var recents []*discordgo.User
 
+func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   inc := strings.Contains(m.Content, "++")
   dec := strings.Contains(m.Content, "--")
 
@@ -36,10 +34,20 @@ func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     return
   }
 
+  // If there are no recent mentions or someone is mentioned,
+  // Update the recents list and use that.
+
+  // If there are recents, and nobody is mentioned, use the old results
+  if len(recents) == 0 || len(m.Mentions) != 0 {
+    recents = m.Mentions
+  }
+
+  // Otherwise, use the old ones
+
   outStr := ""
 
   if inc {
-    for _, user := range m.Mentions {
+    for _, user := range recents {
       if user.ID == m.Author.ID {
         // Nice try, buckwheat
         pp.MinusMinus(user.String())
@@ -65,7 +73,7 @@ func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   }
 
   if dec {
-    for _, user := range m.Mentions {
+    for _, user := range recents {
       if user.ID == m.Author.ID {
         // Nice try, buckwheat
         pp.MinusMinus(user.String())
