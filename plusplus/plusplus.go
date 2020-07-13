@@ -46,7 +46,7 @@ func LoadPlusPlus() error {
   return nil
 }
 
-func PlusPlus(ident string) {
+func PlusPlus(ident string) (int, error) {
   filter := bson.M{"user": ident}
   update := bson.M{"$inc": bson.M{"score": 1}}
 
@@ -57,14 +57,35 @@ func PlusPlus(ident string) {
     // Add user
     err = CreateUser(ident, 1)
     if err != nil {
-      return
+      return 0, err
     }
+    // Always 1
+    return 1, nil
   }
 
+  // Updated score
+  return result["score"].(int), nil
 }
 
-func MinusMinus(ident string) {
+func MinusMinus(ident string) (int, error) {
+  filter := bson.M{"user": ident}
+  update := bson.M{"$inc": bson.M{"score": -1}}
 
+  var result bson.M
+  err := collection.FindOneAndUpdate(context.TODO(), filter, update).Decode(&result)
+
+  if err != nil {
+    // Create with negative karma lol
+    err = CreateUser(ident, -1)
+    if err != nil {
+      return 0, err
+    }
+    // Always -1
+    return -1, nil
+  }
+
+  // Updated score
+  return result["score"].(int), nil
 }
 
 func CreateUser(ident string, score int) error {

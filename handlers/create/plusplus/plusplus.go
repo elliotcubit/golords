@@ -27,7 +27,26 @@ func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
 
   log.Println("Testing")
 
-  pp.PlusPlus("tester")
+  score, _ := pp.PlusPlus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  score, _ = pp.PlusPlus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  score, _ = pp.PlusPlus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  score, _ = pp.MinusMinus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  score, _ = pp.MinusMinus("test_account")
+
+  /*
+  score, err := pp.PlusPlus("test_account")
+  if err != nil {
+    // This will happen if mongo is broken somehow
+    return
+  } else {
+    // score will contain their _updated_ score!
+    log.Println(score)
+  }
+  */
 }
 
 func (h PlusHandler) GetPrompts() []string {
