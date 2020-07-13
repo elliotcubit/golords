@@ -47,19 +47,32 @@ func LoadPlusPlus() error {
 }
 
 func PlusPlus(ident string) {
-  query := bson.M{
-    "user": ident,
-  }
+  filter := bson.M{"user": ident}
+  update := bson.M{"$inc": bson.M{"score": 1}}
 
   var result bson.M
-  err := collection.FindOne(context.TODO(), query).Decode(&result)
+  err := collection.FindOneAndUpdate(context.TODO(), filter, update).Decode(&result)
+
   if err != nil {
-    log.Println(err)
+    // Add user
+    err = CreateUser(ident, 1)
+    if err != nil {
+      return
+    }
   }
 
-  log.Println(result)
 }
 
 func MinusMinus(ident string) {
 
+}
+
+func CreateUser(ident string, score int) error {
+  inf := Info{User: ident, Score: score}
+  _, err := collection.InsertOne(context.TODO(), inf)
+  if err != nil {
+    log.Println("Problem pushing new user to mongoDB")
+    return err
+  }
+  return nil
 }
