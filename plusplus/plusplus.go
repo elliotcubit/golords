@@ -51,9 +51,13 @@ func PlusPlus(ident string) {
     "user": ident,
   }
 
-  res := collection.FindOne(context.TODO(), query)
+  var result bson.M
+  err := collection.FindOne(context.TODO(), query).Decode(&result)
+  if err != nil {
+    log.Println(err)
+  }
 
-  log.Println(res)
+  log.Println(result)
 }
 
 func MinusMinus(ident string) {
