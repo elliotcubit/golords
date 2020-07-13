@@ -11,6 +11,7 @@ import (
   "golords/handlers/create/ping"
   "golords/handlers/create/vote"
   // "golords/handlers/create/anim"
+  "golords/handlers/create/plusplus"
 
   "github.com/bwmarrin/discordgo"
 )
@@ -29,6 +30,7 @@ var commandPrompts = [] handler.CreateHandler{
   ping.New(),
   vote.New(),
   dndlookup.New(),
+  plusplus.New(),
   // anim.New(),
   //youtube.New(),
 }
