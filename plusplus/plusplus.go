@@ -64,7 +64,7 @@ func PlusPlus(ident string) (int, error) {
   }
 
   // Updated score
-  return result["score"].(int), nil
+  return int(result["score"].(int32)), nil
 }
 
 func MinusMinus(ident string) (int, error) {
@@ -85,7 +85,7 @@ func MinusMinus(ident string) (int, error) {
   }
 
   // Updated score
-  return result["score"].(int), nil
+  return int(result["score"].(int32)), nil
 }
 
 func CreateUser(ident string, score int) error {
