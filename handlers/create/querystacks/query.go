@@ -28,9 +28,10 @@ func (h QueryHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   case "!topstacks":
     out, err = pp.TopQuery()
   case "!mystacks":
-    fuckYou := make([]*discordgo.User, 1)
-    fuckYou = append(fuckYou, m.Author)
-    out, err = pp.PeopleQuery(fuckYou)
+    // fuckYou := make([]*discordgo.User, 1)
+    // fuckYou = append(fuckYou, m.Author)
+    // out, err = pp.PeopleQuery(fuckYou)
+    err = fmt.Errorf("Not implemented")
   case "!stacks":
     out, err = pp.PeopleQuery(m.Mentions)
   default:
