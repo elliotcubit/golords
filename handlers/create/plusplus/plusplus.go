@@ -27,8 +27,34 @@ func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
 
   log.Println("Testing")
 
-  // ???????? should be 6
   score, _ := pp.MinusMinus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  // 5
+  score, _ = pp.MinusMinus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  // 4
+  score, _ = pp.MinusMinus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  // 3
+  score, _ = pp.MinusMinus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  // 2
+  score, _ = pp.MinusMinus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  // 1
+  score, _ = pp.MinusMinus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  // 0
+  score, _ = pp.MinusMinus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  // -1
+  score, _ = pp.MinusMinus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  // -2
+  score, _ = pp.PlusPlus("test_account")
+  log.Printf("User test_account has score %d now", score)
+  // -1
+  score, _ = pp.PlusPlus("test_account")
   log.Printf("User test_account has score %d now", score)
 
   /*
