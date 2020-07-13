@@ -27,7 +27,7 @@ func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
 
   log.Println("Testing")
 
-  pp.PlusPlus("test")
+  pp.PlusPlus("tester")
 }
 
 func (h PlusHandler) GetPrompts() []string {
