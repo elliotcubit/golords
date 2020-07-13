@@ -27,11 +27,7 @@ func (h QueryHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   switch data[0] {
   case "!topstacks":
     out, err = pp.TopQuery()
-  case "!mystacks":
-    // fuckYou := make([]*discordgo.User, 1)
-    // fuckYou = append(fuckYou, m.Author)
-    // out, err = pp.PeopleQuery(fuckYou)
-    err = fmt.Errorf("Not implemented")
+  // TODO !mystacks; a health workaround with !stacks @me works at the moment
   case "!stacks":
     out, err = pp.PeopleQuery(m.Mentions)
   default:
@@ -48,11 +44,11 @@ func (h QueryHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
 }
 
 func (h QueryHandler) GetPrompts() []string {
-  return []string{"!topstacks", "!mystacks", "!stacks"}
+  return []string{"!topstacks", "!stacks"}
 }
 
 func (h QueryHandler) Help() string {
-  return "Find out how many stacks someone has.\n!topstacks: top 5\n!mystacks: your stacks\n!stacks @someone: someone elses stacks"
+  return "Find out how many stacks someone has.\n!topstacks: top 5\n!stacks @someone: someone's stacks (can be you)"
 }
 
 func (h QueryHandler) Should(hint string) bool {
