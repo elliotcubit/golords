@@ -11,6 +11,7 @@ import (
   "golords/handlers/create/anim"
   "golords/handlers/create/plusplus"
   "golords/handlers/create/querystacks"
+  "golords/handlers/create/contribute"
 
   "golords/handlers/create/handler"
 
@@ -35,6 +36,7 @@ func New() handler.CreateHandler {
       anim.New(),
       plusplus.New(),
       querystacks.New(),
+      contribute.New(),
     },
   }
 }
