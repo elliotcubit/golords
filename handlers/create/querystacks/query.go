@@ -3,6 +3,7 @@ package querystacks
 import (
   "strings"
   "fmt"
+  "log"
 
   pp "golords/plusplus"
   "golords/handlers/create/handler"
@@ -38,6 +39,7 @@ func (h QueryHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
 
   // Mongo machine broke
   if err != nil {
+    log.Printf("Error in query: %v", err)
     return
   }
 

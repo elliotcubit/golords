@@ -39,6 +39,8 @@ func PeopleQuery(users []*discordgo.User) (string, error) {
     users_query = append(users_query, user.String())
   }
 
+  log.Println(users_query)
+
   filter := bson.M{
     "user": bson.M{
       "$in": users_query,
