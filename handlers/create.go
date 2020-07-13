@@ -12,6 +12,7 @@ import (
   "golords/handlers/create/vote"
   // "golords/handlers/create/anim"
   "golords/handlers/create/plusplus"
+  "golords/handlers/create/querystacks"
 
   "github.com/bwmarrin/discordgo"
 )
@@ -31,6 +32,7 @@ var commandPrompts = [] handler.CreateHandler{
   vote.New(),
   dndlookup.New(),
   plusplus.New(),
+  querystacks.New(),
   // anim.New(),
   //youtube.New(),
 }

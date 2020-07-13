@@ -19,7 +19,7 @@ type QueryHandler struct {
 }
 
 func (h QueryHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
-  data := strings.SplitN(m.Content, 2)
+  data := strings.SplitN(m.Content, " ", 2)
 
   var out string
   var err error
@@ -27,7 +27,9 @@ func (h QueryHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   case "!topstacks":
     out, err = pp.TopQuery()
   case "!mystacks":
-    out, err = pp.SomeoneQuery([m.Author])
+    fuckYou := make([]*discordgo.User, 1)
+    fuckYou = append(fuckYou, m.Author)
+    out, err = pp.PeopleQuery(fuckYou)
   case "!stacks":
     out, err = pp.PeopleQuery(m.Mentions)
   default:
