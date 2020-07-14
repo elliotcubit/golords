@@ -20,6 +20,7 @@ type PlusHandler struct {
 
 // The most recently added-to message
 var recents []*discordgo.User
+var recentIncrement int
 
 func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   inc := strings.Contains(m.Content, "++")
@@ -37,12 +38,25 @@ func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   // If there are no recent mentions or someone is mentioned,
   // Update the recents list and use that.
 
-  // If there are recents, and nobody is mentioned, use the old results
+  // Change target if there are no recents or somebody is mentioned
+  // Also set the value of recentIncrement in this case
   if len(recents) == 0 || len(m.Mentions) != 0 {
     recents = m.Mentions
+    recentIncrement = 3
+    if strings.Contains(m.Content, "++12") || strings.Contains(m.Content, "--12"){
+      recentIncrement = 12
+    }
   }
 
-  // Otherwise, use the old ones
+  // If nobody was mentioned and there are recents,
+  // reuse the most recent value of increment and mentions
+
+  // Quit if no target after that step --
+  // This case is only relevant on startup before
+  // anyone has called  the bot yet.
+  if len(recents) == 0 {
+    return
+  }
 
   outStr := ""
 
@@ -50,20 +64,11 @@ func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     for _, user := range recents {
       if user.ID == m.Author.ID {
         // Nice try, buckwheat
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        score, _ := pp.MinusMinus(user.String())
-        outStr = outStr + fmt.Sprintf("%v has lost 10 stacks for being a sleazy d-bag. They now have %d.\n", user.String(), score)
+        score, _ := pp.MinusMinus(user.String(), 12)
+        outStr = outStr + fmt.Sprintf("%v --12 for trying to edit their own stacks. They now have %d.\n", user.String(), score)
         continue
       }
-      score, err := pp.PlusPlus(user.String())
+      score, err := pp.PlusPlus(user.String(), recentIncrement)
       if err != nil {
         // Mongo machine broke
         return
@@ -76,20 +81,11 @@ func (h PlusHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     for _, user := range recents {
       if user.ID == m.Author.ID {
         // Nice try, buckwheat
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        pp.MinusMinus(user.String())
-        score, _ := pp.MinusMinus(user.String())
-        outStr = outStr + fmt.Sprintf("%v has lost 10 stacks for being a sleazy d-bag. They now have %d.\n", user.String(), score)
+        score, _ := pp.MinusMinus(user.String(), 12)
+        outStr = outStr + fmt.Sprintf("%v --12 for trying to edit their own stacks. They now have %d.\n", user.String(), score)
         continue
       }
-      score, err := pp.MinusMinus(user.String())
+      score, err := pp.MinusMinus(user.String(), recentIncrement)
       if err != nil {
         // Mongo machine broke
         return

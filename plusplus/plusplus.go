@@ -96,46 +96,44 @@ func LoadPlusPlus() error {
   return nil
 }
 
-func PlusPlus(ident string) (int, error) {
+func PlusPlus(ident string, amt int) (int, error) {
   filter := bson.M{"user": ident}
-  update := bson.M{"$inc": bson.M{"score": 1}}
+  update := bson.M{"$inc": bson.M{"score": amt}}
 
   var result bson.M
   err := collection.FindOneAndUpdate(context.TODO(), filter, update).Decode(&result)
 
   if err != nil {
     // Add user
-    err = CreateUser(ident, 1)
+    err = CreateUser(ident, amt)
     if err != nil {
       return 0, err
     }
-    // Always 1
-    return 1, nil
+    return amt, nil
   }
 
   // Updated score
-  return int(result["score"].(int32))+1, nil
+  return int(result["score"].(int32))+amt, nil
 }
 
-func MinusMinus(ident string) (int, error) {
+func MinusMinus(ident string, amt int) (int, error) {
   filter := bson.M{"user": ident}
-  update := bson.M{"$inc": bson.M{"score": -1}}
+  update := bson.M{"$inc": bson.M{"score": -amt}}
 
   var result bson.M
   err := collection.FindOneAndUpdate(context.TODO(), filter, update).Decode(&result)
 
   if err != nil {
     // Create with negative karma lol
-    err = CreateUser(ident, -1)
+    err = CreateUser(ident, -amt)
     if err != nil {
       return 0, err
     }
-    // Always -1
-    return -1, nil
+    return -amt, nil
   }
 
   // Updated score
-  return int(result["score"].(int32))-1, nil
+  return int(result["score"].(int32))-amt, nil
 }
 
 func CreateUser(ident string, score int) error {
