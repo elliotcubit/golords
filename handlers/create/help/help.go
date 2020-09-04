@@ -12,6 +12,7 @@ import (
   "golords/handlers/create/plusplus"
   "golords/handlers/create/querystacks"
   "golords/handlers/create/contribute"
+  "golords/handlers/create/eqn"
 
   "golords/handlers/create/handler"
 
@@ -37,6 +38,7 @@ func New() handler.CreateHandler {
       plusplus.New(),
       querystacks.New(),
       contribute.New(),
+      eqn.New(),
     },
   }
 }
