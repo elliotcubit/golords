@@ -23,7 +23,7 @@ type IanHandler struct {
 func (h IanHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   content := strings.ToLower(m.Content)
 
-  buyWords := []string{"buy", "bought", "purchase", "get a new", "house"}
+  buyWords := []string{"buy", "bought", "purchase", "get a new", "house", "pay"}
 
   shouldTrigger := false
 
