@@ -26,6 +26,7 @@ const (
 
 // Does this syntax even work?
 var commandPrompts = [] handler.CreateHandler{
+  ian.New(),
   addquote.New(),
   ball.New(),
   diceroll.New(),
@@ -38,7 +39,6 @@ var commandPrompts = [] handler.CreateHandler{
   querystacks.New(),
   contribute.New(),
   eqn.New(),
-  ian.New(),
   // anim.New(),
   //youtube.New(),
 }
@@ -55,6 +55,10 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
   roles := m.Member.Roles
   for i := 0; i < len(roles); i++ {
     if roles[i] == RULEBREAKER_UUID {
+      // Functions that should trigger, even with the rule-breaker role.
+      if commandPrompts[0].Should(m.Content) {
+        commandPrompts[0].Do(s, m)
+      }
       return
     }
   }
@@ -64,6 +68,7 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
   for _, handler := range commandPrompts {
     if handler.Should(m.Content) {
       handler.Do(s, m)
+      return
     }
   }
 }
