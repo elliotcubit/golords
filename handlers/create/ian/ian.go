@@ -1,8 +1,7 @@
 package ian
 
 import (
-  "string"
-  "fmt"
+  "strings"
 
   "golords/handlers/create/handler"
 
@@ -13,7 +12,7 @@ import (
   TODO only enable this in my server.
 */
 
-func New() handler.IanHandler {
+func New() handler.CreateHandler {
   return IanHandler{}
 }
 
@@ -22,17 +21,17 @@ type IanHandler struct {
 }
 
 func (h IanHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
-  content := strings.toLower(m.Content)
+  content := strings.ToLower(m.Content)
 
   buyWords := []string{"buy", "bought", "purchase", "get a new", "house"}
 
   shouldTrigger := false
 
-  for word := range buyWords {
+  for _, word := range buyWords {
     shouldTrigger = shouldTrigger || strings.Contains(content, word)
   }
 
-  shouldTrigger = shouldTrigger && strings.contains("ian")
+  shouldTrigger = shouldTrigger && strings.Contains(content, "ian")
 
   if !shouldTrigger {
     return
