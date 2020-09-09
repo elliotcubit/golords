@@ -40,6 +40,7 @@ func (h IanHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     "csgo crate",
     "get me",
     "give me",
+    "cash",
   }
 
   shouldTrigger := false
