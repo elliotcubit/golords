@@ -23,7 +23,22 @@ type IanHandler struct {
 func (h IanHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   content := strings.ToLower(m.Content)
 
-  buyWords := []string{"buy", "bought", "purchase", "get a new", "house", "pay"}
+  buyWords := []string{
+    "buy",
+    "bought",
+    "purchase",
+    "get a new",
+    "house",
+    "pay",
+    "spend",
+    "buying",
+    "irl money",
+    "for me",
+    "for us",
+    "for eric",
+    "gil",
+    "csgo crate",
+  }
 
   shouldTrigger := false
 
@@ -33,7 +48,7 @@ func (h IanHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
 
   shouldTrigger = shouldTrigger && strings.Contains(content, "ian")
 
-  if !shouldTrigger {
+  if !shouldTrigger && (!strings.Contains(content, "don't") || !strings.Contains(content, "dont")) {
     return
   }
 
