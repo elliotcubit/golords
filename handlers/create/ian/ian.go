@@ -37,8 +37,7 @@ func (h IanHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     return
   }
 
-  // s.ChannelMessageSend(m.ChannelID, "<@208773246009475072>, don't buy that thing!!!!!")
-  s.ChannelMessageSend(m.ChannelID, "<@237353410616098818>, don't buy that thing!!!!!")
+  s.ChannelMessageSend(m.ChannelID, "<@208773246009475072>, don't buy that thing!!!!!")
 }
 
 func (h IanHandler) GetPrompts() []string {
