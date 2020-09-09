@@ -9,7 +9,6 @@ import (
   "golords/handlers/create/ping"
   "golords/handlers/create/vote"
   "golords/handlers/create/anim"
-  "golords/handlers/create/plusplus"
   "golords/handlers/create/querystacks"
   "golords/handlers/create/contribute"
   "golords/handlers/create/eqn"
@@ -35,7 +34,6 @@ func New() handler.CreateHandler {
       vote.New(),
       dndlookup.New(),
       anim.New(),
-      plusplus.New(),
       querystacks.New(),
       contribute.New(),
       eqn.New(),

@@ -15,6 +15,7 @@ import (
   "golords/handlers/create/querystacks"
   "golords/handlers/create/contribute"
   "golords/handlers/create/eqn"
+  "golords/handlers/create/ian"
 
   "github.com/bwmarrin/discordgo"
 )
@@ -37,6 +38,7 @@ var commandPrompts = [] handler.CreateHandler{
   querystacks.New(),
   contribute.New(),
   eqn.New(),
+  ian.New(),
   // anim.New(),
   //youtube.New(),
 }
