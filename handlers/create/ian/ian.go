@@ -39,6 +39,7 @@ func (h IanHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     "gil",
     "csgo crate",
     "get me",
+    "give me",
   }
 
   shouldTrigger := false
@@ -47,7 +48,7 @@ func (h IanHandler) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     shouldTrigger = shouldTrigger || strings.Contains(content, word)
   }
 
-  shouldTrigger = shouldTrigger && strings.Contains(content, "ian")
+  shouldTrigger = shouldTrigger && (strings.Contains(content, "ian") || strings.Contains(content, "ina"))
 
   if !shouldTrigger || strings.Contains(content, "don't") || strings.Contains(content, "dont") {
     return
