@@ -33,7 +33,7 @@ func main(){
   }
 
   // Keep the last 20 messages cached.
-  dg.State.MaxMessageCount = 20
+  dg.State.MaxMessageCount = 50
 
   // Register handlers
   dg.AddHandler(handlers.OnMessageCreate)
