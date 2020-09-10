@@ -68,7 +68,6 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
   for _, handler := range commandPrompts {
     if handler.Should(m.Content) {
       handler.Do(s, m)
-      return
     }
   }
 }
