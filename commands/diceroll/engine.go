@@ -27,7 +27,7 @@ type DiceQuery struct {
 }
 
 // Return as a string the results of the query
-func Do(query string) string {
+func executeQuery(query string) string {
   if query == "stats" {
       old := doStats()
       stats := make([]interface{}, len(old))
@@ -42,7 +42,7 @@ func Do(query string) string {
     return ""
   }
 
-  err = executeDq(dq) // 
+  err = executeDq(dq) //
   if err != nil {
     return ""
   }

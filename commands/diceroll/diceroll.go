@@ -4,7 +4,6 @@ import (
   "golords/handlers"
   "github.com/bwmarrin/discordgo"
   "strings"
-  "golords/diceroll"
 )
 
 // TODO move diceroll from root to this package
@@ -24,7 +23,7 @@ func (h DiceRoll) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   }
   query := data[1]
   strings.Replace(query, " ", "", -1)
-  msg := diceroll.Do(query)
+  msg := executeQuery(query)
   if msg != "" {
     s.ChannelMessageSend(m.ChannelID, msg)
   }
