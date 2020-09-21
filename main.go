@@ -27,6 +27,7 @@ import (
   // Passive Modules
   _ "golords/passive/ian"
   _ "golords/passive/plusplus"
+  _ "golords/passive/learntocount"
 )
 
 func main(){
