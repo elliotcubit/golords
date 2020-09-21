@@ -25,13 +25,13 @@ func (h Stack) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   var out string
   var err error
   switch data[0] {
-  case "!topstacks":
+  case "topstacks":
     out, err = state.TopQuery()
   // TODO !mystacks; a health workaround with !stacks @me works at the moment
-  case "!stacks":
+  case "stacks":
     out, err = state.PeopleQuery(m.Mentions)
   default:
-    err = fmt.Errorf("Bad command")
+    err = fmt.Errorf("Bad command: %v", data[0])
   }
 
   // Mongo machine broke
