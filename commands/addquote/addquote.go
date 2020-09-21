@@ -4,9 +4,8 @@ import (
   "golords/handlers"
   "github.com/bwmarrin/discordgo"
 
-
   "strings"
-  "golords/quotemanager"
+  "golords/state"
 )
 
 func init(){
@@ -22,7 +21,7 @@ func (h AddQuote) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     if len(data) == 1 {
       return
     }
-    quotemanager.AddQuote(
+    state.AddQuote(
       m.Author.String(),
       data[1],
       string(m.Timestamp),

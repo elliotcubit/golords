@@ -5,7 +5,7 @@ import (
   "fmt"
   "log"
 
-  pp "golords/plusplus"
+  "golords/state"
   "golords/handlers"
 
   "github.com/bwmarrin/discordgo"
@@ -26,10 +26,10 @@ func (h Stack) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   var err error
   switch data[0] {
   case "!topstacks":
-    out, err = pp.TopQuery()
+    out, err = state.TopQuery()
   // TODO !mystacks; a health workaround with !stacks @me works at the moment
   case "!stacks":
-    out, err = pp.PeopleQuery(m.Mentions)
+    out, err = state.PeopleQuery(m.Mentions)
   default:
     err = fmt.Errorf("Bad command")
   }

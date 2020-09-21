@@ -1,33 +1,19 @@
-package plusplus
+package state
 
 import (
-  "os"
   "log"
   "context"
   "fmt"
 
-  "go.mongodb.org/mongo-driver/mongo"
-  "go.mongodb.org/mongo-driver/mongo/options"
   "go.mongodb.org/mongo-driver/bson"
 
   "github.com/bwmarrin/discordgo"
 )
 
-// Called when module first loaded
-func init() {
-  err := LoadPlusPlus()
-  if err != nil {
-    log.Fatal(err)
-  }
-}
-
-type Info struct {
+type PlusInfo struct {
   User string
   Score int
 }
-
-var client mongo.Client
-var collection *mongo.Collection
 
 func PeopleQuery(users []*discordgo.User) (string, error) {
   if len(users) == 0 {
@@ -47,7 +33,7 @@ func PeopleQuery(users []*discordgo.User) (string, error) {
     },
   }
 
-  cursor, err := collection.Find(context.TODO(), filter)
+  cursor, err := plusplusColl.Find(context.TODO(), filter)
   if err != nil {
     // TODO all these people actually just have zero stacks
     return "", fmt.Errorf("No documents")
@@ -76,36 +62,16 @@ func TopQuery() (string, error) {
   return "", fmt.Errorf("Not implemented lol fuck you")
 }
 
-func LoadPlusPlus() error {
-  URI := os.Getenv("MONGO_URI")
-  if URI == "" {
-    log.Fatal("No URI found for MongoDB")
-  }
-  clientOptions := options.Client().ApplyURI(URI)
-  client, err := mongo.Connect(context.TODO(), clientOptions)
-  if err != nil {
-    return err
-  }
-  err = client.Ping(context.TODO(), nil)
-  if err != nil {
-    return err
-  }
-  log.Print("Successfully connected to MongoDB")
-  collection = client.Database("plusplus").Collection("plusplus")
-
-  return nil
-}
-
 func PlusPlus(ident string, amt int) (int, error) {
   filter := bson.M{"user": ident}
   update := bson.M{"$inc": bson.M{"score": amt}}
 
   var result bson.M
-  err := collection.FindOneAndUpdate(context.TODO(), filter, update).Decode(&result)
+  err := plusplusColl.FindOneAndUpdate(context.TODO(), filter, update).Decode(&result)
 
   if err != nil {
     // Add user
-    err = CreateUser(ident, amt)
+    err = ppCreateUser(ident, amt)
     if err != nil {
       return 0, err
     }
@@ -121,11 +87,11 @@ func MinusMinus(ident string, amt int) (int, error) {
   update := bson.M{"$inc": bson.M{"score": -amt}}
 
   var result bson.M
-  err := collection.FindOneAndUpdate(context.TODO(), filter, update).Decode(&result)
+  err := plusplusColl.FindOneAndUpdate(context.TODO(), filter, update).Decode(&result)
 
   if err != nil {
     // Create with negative karma lol
-    err = CreateUser(ident, -amt)
+    err = ppCreateUser(ident, -amt)
     if err != nil {
       return 0, err
     }
@@ -136,9 +102,9 @@ func MinusMinus(ident string, amt int) (int, error) {
   return int(result["score"].(int32))-amt, nil
 }
 
-func CreateUser(ident string, score int) error {
-  inf := Info{User: ident, Score: score}
-  _, err := collection.InsertOne(context.TODO(), inf)
+func ppCreateUser(ident string, score int) error {
+  inf := PlusInfo{User: ident, Score: score}
+  _, err := plusplusColl.InsertOne(context.TODO(), inf)
   if err != nil {
     log.Println("Problem pushing new user to mongoDB")
     return err

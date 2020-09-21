@@ -3,7 +3,7 @@ package getquote
 import (
   "golords/handlers"
   "github.com/bwmarrin/discordgo"
-  "golords/quotemanager"
+  "golords/state"
   "fmt"
   "time"
 )
@@ -17,7 +17,7 @@ func init(){
 type GetQuote struct{}
 
 func (h GetQuote) Do(s *discordgo.Session, m *discordgo.MessageCreate){
-  q := quotemanager.GetRandomQuote()
+  q := state.GetRandomQuote()
   t, _ := time.Parse(time.RFC3339, q.Timestamp) // TODO error checking
   ts := fmt.Sprintf("%d-%d-%d", t.Year(), t.Month(), t.Day())
   msg := fmt.Sprintf("\"%v\" added by %v on %v", q.Text, q.AddedBy, ts)

@@ -4,7 +4,7 @@ import (
   "strings"
   "fmt"
 
-  pp "golords/plusplus"
+  "golords/state"
   "golords/handlers"
 
   "github.com/bwmarrin/discordgo"
@@ -64,11 +64,11 @@ func (h PlusPlus) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     for _, user := range recents {
       if user.ID == m.Author.ID {
         // Nice try, buckwheat
-        score, _ := pp.MinusMinus(user.String(), 12)
+        score, _ := state.MinusMinus(user.String(), 12)
         outStr = outStr + fmt.Sprintf("%v --12 for trying to edit their own stacks. They now have %d.\n", user.String(), score)
         continue
       }
-      score, err := pp.PlusPlus(user.String(), recentIncrement)
+      score, err := state.PlusPlus(user.String(), recentIncrement)
       if err != nil {
         // Mongo machine broke
         return
@@ -81,11 +81,11 @@ func (h PlusPlus) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     for _, user := range recents {
       if user.ID == m.Author.ID {
         // Nice try, buckwheat
-        score, _ := pp.MinusMinus(user.String(), 12)
+        score, _ := state.MinusMinus(user.String(), 12)
         outStr = outStr + fmt.Sprintf("%v --12 for trying to edit their own stacks. They now have %d.\n", user.String(), score)
         continue
       }
-      score, err := pp.MinusMinus(user.String(), recentIncrement)
+      score, err := state.MinusMinus(user.String(), recentIncrement)
       if err != nil {
         // Mongo machine broke
         return
