@@ -1,73 +1,52 @@
 package handlers
 
 import (
-  "golords/handlers/create/handler"
-  "golords/handlers/create/addquote"
-  "golords/handlers/create/ball"
-  "golords/handlers/create/diceroll"
-  "golords/handlers/create/dndlookup"
-  "golords/handlers/create/getquote"
-  "golords/handlers/create/help"
-  "golords/handlers/create/ping"
-  "golords/handlers/create/vote"
-  // "golords/handlers/create/anim"
-  "golords/handlers/create/plusplus"
-  "golords/handlers/create/querystacks"
-  "golords/handlers/create/contribute"
-  "golords/handlers/create/eqn"
-  "golords/handlers/create/ian"
-
+  "strings"
+  "golords/commands"
+  "golords/passive"
   "github.com/bwmarrin/discordgo"
 )
 
-const (
-  RULEBREAKER_UUID = "724433548567773235"
-)
+var activeModules = []commands.ActiveModule{}
+var passiveModules = []passive.PassiveModule{}
 
-// Does this syntax even work?
-var commandPrompts = [] handler.CreateHandler{
-  ian.New(),
-  addquote.New(),
-  ball.New(),
-  diceroll.New(),
-  getquote.New(),
-  help.New(),
-  ping.New(),
-  vote.New(),
-  dndlookup.New(),
-  plusplus.New(),
-  querystacks.New(),
-  contribute.New(),
-  eqn.New(),
-  // anim.New(),
-  //youtube.New(),
+func RegisterActiveModule(handler commands.ActiveModule){
+  activeModules = append(activeModules, handler)
+}
+
+func RegisterPassiveModule(handler passive.PassiveModule){
+  passiveModules = append(passiveModules, handler)
 }
 
 func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-  // Ignore ourself no matter what
+  // Ignore ourself
   if m.Author.ID == s.State.User.ID {
     return
   }
 
-  // Ignore the rulebreaker role,
-  // TODO set this to be configurable to
-  // different roles.
-  roles := m.Member.Roles
-  for i := 0; i < len(roles); i++ {
-    if roles[i] == RULEBREAKER_UUID {
-      // Functions that should trigger, even with the rule-breaker role.
-      if commandPrompts[0].Should(m.Content) {
-        commandPrompts[0].Do(s, m)
+  // Help will not be its own module
+  if strings.HasPrefix(m.Content, "!help") {
+    helpMessage := "Commands:\n"
+    for _, handler := range activeModules {
+      helpMessage += strings.Join(handler.Prefixes(), ", ")
+      helpMessage += ": " + handler.Help() + "\n"
+    }
+    s.ChannelMessageSend(m.ChannelID, helpMessage)
+  }
+
+  if strings.HasPrefix(m.Content, "!"){
+    m.Content = m.Content[1:]
+    for _, handler := range activeModules {
+      for _, prefix := range handler.Prefixes() {
+        if strings.HasPrefix(m.Content, prefix) {
+          handler.Do(s, m)
+          break
+        }
       }
-      return
     }
   }
 
-
-  // Run appropriate command, if there is one
-  for _, handler := range commandPrompts {
-    if handler.Should(m.Content) {
-      handler.Do(s, m)
-    }
+  for _, handler := range passiveModules {
+    handler.Do(s, m)
   }
 }

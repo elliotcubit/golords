@@ -1,7 +1,6 @@
 package main
 
 import (
-  "fmt"
   "os"
   "os/signal"
   "syscall"
@@ -9,56 +8,73 @@ import (
   "math/rand"
   "time"
 
-  "golords/credentials"
   "golords/handlers"
   "github.com/bwmarrin/discordgo"
+
+  // Importing a module here handles everything
+
+  // Active Modules
+  _ "golords/commands/addquote"
+  _ "golords/commands/ball"
+  _ "golords/commands/contribute"
+  _ "golords/commands/diceroll"
+  _ "golords/commands/eqn"
+  _ "golords/commands/getquote"
+  _ "golords/commands/ping"
+  _ "golords/commands/querystacks"
+  _ "golords/commands/vote"
+
+  // Passive Modules
+  _ "golords/passive/ian"
+  _ "golords/passive/plusplus"
 )
 
 func main(){
   log.Println("Loading golordsbot")
 
-  creds, err := credentials.LoadCreds()
-  if err != nil {
-    log.Fatal("Problem loading credentials")
+  // Get credentials
+  DISCORD_ID := os.Getenv("DISCORD_ID")
+  DISCORD_SECRET := os.Getenv("DISCORD_SECRET")
+  DISCORD_TOKEN := os.Getenv("DISCORD_TOKEN")
+
+  if DISCORD_ID == "" {
+    log.Fatal("DISCORD_ID environment variable not set")
+  }
+  if DISCORD_SECRET == "" {
+    log.Fatal("DISCORD_SECRET environment variable not set")
+  }
+  if DISCORD_TOKEN == "" {
+    log.Fatal("DISCORD_TOKEN environment variable not set")
   }
 
-  dg, err := discordgo.New("Bot " + creds.Token)
+  // Create Discord session
+  dg, err := discordgo.New("Bot " + DISCORD_TOKEN)
   if err != nil {
-    log.Fatalf("error creating Discord session: %v", err)
+    log.Fatalf("Error creating Discord session: %v", err)
   }
+  defer dg.Close()
 
-  err = InitializeStoredData()
-  if err != nil {
-    log.Fatalf("error initializing data %v", err)
-  }
-
-  // Keep the last 20 messages cached.
+  // # of message to respond to edited events
   dg.State.MaxMessageCount = 50
 
-  // Register handlers
+  // Register message handlers
   dg.AddHandler(handlers.OnMessageCreate)
   dg.AddHandler(handlers.OnMessageUpdate)
-  dg.AddHandler(handlers.OnMessageDelete)
 
   // Open connection
   err = dg.Open()
   if err != nil {
-    log.Fatalf("error while opening connection", err)
+    log.Fatalf("Error while opening connection to discord: %v", err)
   }
 
-  // Init RNG to start time.
   rand.Seed(time.Now().Unix())
 
-  // Let 'em know
-  fmt.Println("Golords bot is alive. ^C exits.")
+  log.Println("Golords bot is alive. SIGINT exits.")
 
-  // Listen for a ^C with syscall
   sc := make(chan os.Signal, 1)
   signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
   <- sc
 
-  fmt.Println("^C Registered. Beginning the shutdown routine.")
-
-  // Shut down nicely
-  dg.Close()
+  log.Println("SIGINT Registered. Shutting down.")
+  log.Println("Goodbye <3")
 }
