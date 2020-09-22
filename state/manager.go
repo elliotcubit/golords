@@ -23,7 +23,7 @@ func AddQuote(server, user, quote, timestamp string){
 
 func GetRandomQuote(serverID string) (Quote, error) {
   var result Quote
-  rows, err := database.Query(getRandomQuoteStatement, serverID)
+  rows, err := database.Query(fmt.Sprintf(getRandomQuoteStatement, serverID))
   if err != nil {
     return result, err
   }
