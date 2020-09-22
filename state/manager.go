@@ -1,11 +1,8 @@
 package state
 
 import (
+  "fmt"
   "log"
-  "context"
-
-  "go.mongodb.org/mongo-driver/mongo"
-  "go.mongodb.org/mongo-driver/bson"
 )
 
 type Quote struct {
@@ -14,42 +11,28 @@ type Quote struct {
   Timestamp string
 }
 
-func AddQuote(by string, text string, timestamp string){
-  quote := Quote{AddedBy: by, Text: text, Timestamp: timestamp}
-  _, err := qmanagerColl.InsertOne(context.TODO(), quote)
+var createQuoteStatement string = `INSERT INTO quotes(serverID, userID, quote, timestamp) VALUES ('%s', '%s', '%s', '%s')`
+var getRandomQuoteStatement string = `SELECT userID, quote, timestamp FROM quotes ORDER BY RANDOM() LIMIT 1`
+
+func AddQuote(server, user, quote, timestamp string){
+  _, err := database.Exec(fmt.Sprintf(createQuoteStatement, server, user, quote, timestamp))
   if err != nil {
-    log.Fatal("Problem pushing new quote to MongoDB")
+    log.Println("Failed to add quote to database")
   }
 }
 
-func GetRandomQuote() Quote {
-  query := bson.D{
-    {"$sample", bson.D{
-      {"size", 1},
-    }},
-  }
-  cursor, err := qmanagerColl.Aggregate(context.TODO(), mongo.Pipeline{query})
+func GetRandomQuote() (Quote, error) {
+  var result Quote
+  rows, err := database.Query(getRandomQuoteStatement)
   if err != nil {
-    log.Fatal(err)
+    return result, err
   }
-  var results[]bson.M
-  if err = cursor.All(context.TODO(), &results); err != nil {
-    log.Fatal(err)
+  defer rows.Close()
+  for rows.Next(){
+    err := rows.Scan(&result.AddedBy, &result.Text, &result.Timestamp)
+    if err != nil {
+      return result, err
+    }
   }
-  var ret Quote
-  var ok bool
-  ret.AddedBy, ok = results[0]["addedby"].(string)
-  if !ok {
-    log.Fatal("Expected string from mongo results")
-  }
-  ret.Text, ok = results[0]["text"].(string)
-  if !ok {
-    log.Fatal("Expected string from mongo results")
-  }
-  ret.Timestamp, ok = results[0]["timestamp"].(string)
-  if !ok {
-    log.Fatal("Expected string from mongo results")
-  }
-
-  return ret
+  return result, nil
 }

@@ -1,4 +1,4 @@
-package querystacks
+package querybeans
 
 import (
   "strings"
@@ -13,21 +13,21 @@ import (
 
 func init(){
   handlers.RegisterActiveModule(
-    Stack{},
+    Bean{},
   )
 }
 
-type Stack struct{}
+type Bean struct{}
 
-func (h Stack) Do(s *discordgo.Session, m *discordgo.MessageCreate){
+func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   data := strings.SplitN(m.Content, " ", 2)
 
   var out string
   var err error
   switch data[0] {
-  case "topstacks":
+  case "topbeans":
     // TODO specify how many with command
-    results, err := state.GetTopNStacks(m.GuildID, 5)
+    results, err := state.GetTopNBeans(m.GuildID, 5)
     if err != nil {
       log.Println(err)
       return
@@ -36,11 +36,11 @@ func (h Stack) Do(s *discordgo.Session, m *discordgo.MessageCreate){
       out += fmt.Sprintf("%v: %d stacks\n", user, amount)
     }
   // TODO !mystacks; a health workaround with !stacks @me works at the moment
-  case "stacks":
+  case "beans":
     // TODO this only really needs one query
     // SELECT * FROM _ WHERE --- OR --- OR --- OR --- OR
     for _, user := range m.Mentions {
-      amount, err := state.GetStacksForUser(m.GuildID, user.String())
+      amount, err := state.GetBeansForUser(m.GuildID, user.String())
       if err != nil {
         log.Println(err)
         return
@@ -65,10 +65,10 @@ func (h Stack) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   s.ChannelMessageSend(m.ChannelID, out)
 }
 
-func (h Stack) Help() string {
-  return "Find out how many stacks someone has.\n!topstacks: top 5\n!stacks @someone: someone's stacks (can be you)"
+func (h Bean) Help() string {
+  return "Find out how many beans someone has.\n!topbeans: top 5\n!beans @someone: someone's beans (can be you)"
 }
 
-func (h Stack) Prefixes() []string {
-  return []string{"topstacks", "stacks"}
+func (h Bean) Prefixes() []string {
+  return []string{"topbeans", "beans"}
 }

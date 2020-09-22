@@ -43,8 +43,14 @@ func (h PlusPlus) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   if len(recents) == 0 || len(m.Mentions) != 0 {
     recents = m.Mentions
     recentIncrement = 3
+    if dec {
+      recentIncrement = -3
+    }
     if strings.Contains(m.Content, "++12") || strings.Contains(m.Content, "--12"){
       recentIncrement = 12
+      if dec {
+        recentIncrement = -12
+      }
     }
   }
 
@@ -60,38 +66,18 @@ func (h PlusPlus) Do(s *discordgo.Session, m *discordgo.MessageCreate){
 
   outStr := ""
 
-  if inc {
-    for _, user := range recents {
-      if user.ID == m.Author.ID {
-        // Nice try, buckwheat
-        score, _ := state.MinusMinus(user.String(), 12)
-        outStr = outStr + fmt.Sprintf("%v --12 for trying to edit their own stacks. They now have %d.\n", user.String(), score)
-        continue
-      }
-      score, err := state.PlusPlus(user.String(), recentIncrement)
-      if err != nil {
-        // Mongo machine broke
-        return
-      }
-      outStr = outStr + fmt.Sprintf("%v now has %d stacks\n", user.String(), score)
+  for _, user := range recents {
+    if user.ID == m.Author.ID {
+      // Nice try, buckwheat
+      score, _ := state.UpdateStacks(m.GuildID, user.String(), -12)
+      outStr = outStr + fmt.Sprintf("%v --12 for trying to edit their own stacks. They now have %d.\n", user.String(), score)
+      continue
     }
-  }
-
-  if dec {
-    for _, user := range recents {
-      if user.ID == m.Author.ID {
-        // Nice try, buckwheat
-        score, _ := state.MinusMinus(user.String(), 12)
-        outStr = outStr + fmt.Sprintf("%v --12 for trying to edit their own stacks. They now have %d.\n", user.String(), score)
-        continue
-      }
-      score, err := state.MinusMinus(user.String(), recentIncrement)
-      if err != nil {
-        // Mongo machine broke
-        return
-      }
-      outStr = outStr + fmt.Sprintf("%v now has %d stacks\n", user.String(), score)
+    score, err := state.UpdateStacks(m.GuildID, user.String(), recentIncrement)
+    if err != nil {
+      return
     }
+    outStr = outStr + fmt.Sprintf("%v now has %d stacks\n", user.String(), score)
   }
 
   // Send what is hopefully not an enormous message

@@ -23,6 +23,7 @@ import (
   _ "golords/commands/ping"
   _ "golords/commands/querystacks"
   _ "golords/commands/vote"
+  _ "golords/commands/querybeans"
 
   // Passive Modules
   _ "golords/passive/ian"

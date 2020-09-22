@@ -40,12 +40,13 @@ func (h LearnToCount) Do(s *discordgo.Session, m *discordgo.MessageCreate){
       return
       // A mistake was made if previous is set, but the message isn't a number
     } else {
+      punish(s, m, -(previous*(previous+1)/2))
       previous = NOT_SET
-      punish(s, m)
     }
     // The message IS a number
   } else {
     // Blindly trust the first message we see
+    // No points for blind trust message
     if previous == NEVER_SET {
       previous = i
       return
@@ -53,18 +54,20 @@ func (h LearnToCount) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     // If we just reset, the new number must be 1
     if previous == NOT_SET {
       if i != 1 {
-        punish(s, m)
+        return
       } else {
         previous = i
+        reward(s, m, previous)
       }
       // If we didn't it must be previous + 1
     } else {
       // A mistake
       if i != (previous + 1){
+        punish(s, m, -(previous*(previous+1)/2))
         previous = NOT_SET
-        punish(s, m)
       } else {
         previous = i
+        reward(s, m, previous)
       }
     }
   }
@@ -74,13 +77,21 @@ func (h LearnToCount) Help() string {
   return "Why is it so hard to learn to count?"
 }
 
-func punish(s *discordgo.Session, m *discordgo.MessageCreate){
+func reward(s *discordgo.Session, m *discordgo.MessageCreate, amount int){
+  if m.Author == nil {
+    log.Println("Something bad happened rewarded beancounters")
+    return
+  }
+  // No message for rewards
+  state.UpdateBeans(m.GuildID, m.Author.String(), amount)
+}
+
+func punish(s *discordgo.Session, m *discordgo.MessageCreate, amount int){
   if m.Author == nil {
     log.Println("An error was made in counting, but the message doesn't seem to have an author to punish")
     return
   }
-
-  state.MinusMinus(m.Author.Discriminator, 3)
-  pingString := fmt.Sprintf("<@%s> fucked up. Minus 3 stacks.", m.Author.ID)
+  state.UpdateBeans(m.GuildID, m.Author.String(), amount)
+  pingString := fmt.Sprintf("<@%s> fucked up. -1 stacks.", m.Author.ID)
   s.ChannelMessageSend(m.ChannelID, pingString)
 }

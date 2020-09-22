@@ -4,12 +4,12 @@ import (
   "fmt"
 )
 
-var createStackStatement string = `INSERT INTO stacks(serverID, userID, amount) VALUES ('%s', '%s', %d)`
-var getStackRowStatement string = `SELECT amount FROM stacks WHERE serverID='%s' AND userID='%s'`
-var updateStackRowStatement string = `UPDATE stacks SET amount=%d WHERE serverID='%s' AND userID='%s'`
-var getTopStackRowStatement string = `SELECT userID, amount FROM stacks WHERE serverID='%s' ORDER BY amount DESC LIMIT %d`
+var createBeanStatement string = `INSERT INTO beans(serverID, userID, amount) VALUES ('%s', '%s', %d)`
+var getBeanRowStatement string = `SELECT amount FROM beans WHERE serverID='%s' AND userID='%s'`
+var updateBeanRowStatement string = `UPDATE beans SET amount=%d WHERE serverID='%s' AND userID='%s'`
+var getTopBeanRowStatement string = `SELECT userID, amount FROM beans WHERE serverID='%s' ORDER BY amount DESC LIMIT %d`
 
-func GetStacksForUser(server, user string) (int, error) {
+func GetBeansForUser(server, user string) (int, error) {
     var amount int;
     rows, err := database.Query(fmt.Sprintf(getStackRowStatement, server, user))
     if err != nil {
@@ -26,7 +26,7 @@ func GetStacksForUser(server, user string) (int, error) {
     return amount, nil
 }
 
-func GetTopNStacks(server string, n int) (map[string]int, error) {
+func GetTopNBeans(server string, n int) (map[string]int, error) {
   var user string
   var amount int
   result := make(map[string]int, 0)
@@ -45,7 +45,7 @@ func GetTopNStacks(server string, n int) (map[string]int, error) {
   return result, nil
 }
 
-func UpdateStacks(server, user string, amount int) (int, error) {
+func UpdateBeans(server, user string, amount int) (int, error) {
   var currentScore int;
   var updatedScore int;
   rows, err := database.Query(fmt.Sprintf(getStackRowStatement, server, user))
@@ -80,7 +80,7 @@ func UpdateStacks(server, user string, amount int) (int, error) {
   return updatedScore, nil
 }
 
-func ppCreateUser(server, user string, amount int) error {
+func bbCreateUser(server, user string, amount int) error {
   _, err := database.Exec(fmt.Sprintf(createStackStatement, server, user, amount))
   return err
 }
