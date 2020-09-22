@@ -141,5 +141,5 @@ func (h Bean) Help() string {
 }
 
 func (h Bean) Prefixes() []string {
-  return []string{"topbeans", "beans", "mybeans"}
+  return []string{"topbeans", "beans", "mybeans", "givebeans"}
 }
