@@ -49,6 +49,7 @@ func (h LearnToCount) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     // No points for blind trust message
     if previous == NEVER_SET {
       previous = i
+      reward(s, m, previous)
       return
     }
     // If we just reset, the new number must be 1

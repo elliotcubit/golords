@@ -46,6 +46,7 @@ func GetTopNBeans(server string, n int) (map[string]int, error) {
 }
 
 func UpdateBeans(server, user string, amount int) (int, error) {
+  fmt.Println("Adding %v beans to %v", amount, user)
   var currentScore int;
   var updatedScore int;
   rows, err := database.Query(fmt.Sprintf(getBeanRowStatement, server, user))
