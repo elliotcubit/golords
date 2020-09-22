@@ -64,7 +64,7 @@ func UpdateBeans(server, user string, amount int) (int, error) {
   // Create user if there wasn't a row
   if !didGetResult {
     updatedScore = amount
-    err := ppCreateUser(server, user, updatedScore)
+    err := bbCreateUser(server, user, updatedScore)
     if err != nil {
       return 0, err
     }
