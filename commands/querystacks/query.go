@@ -26,10 +26,21 @@ func (h Stack) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   var err error
   switch data[0] {
   case "topstacks":
-    out, err = state.TopQuery()
+    // TODO specify how many with command
+    results, err = state.GetTopNStacks(5)
+    for user, amount := range results {
+      out += fmt.Sprintf("%v: %d stacks\n", user, amount)
+    }
   // TODO !mystacks; a health workaround with !stacks @me works at the moment
   case "stacks":
-    out, err = state.PeopleQuery(m.Mentions)
+    // TODO this only really needs one query
+    // SELECT * FROM _ WHERE --- OR --- OR --- OR --- OR
+    for _, user := range m.Mentions {
+      amount, err := state.GetStacksForUser(m.GuildID, user.String())
+      out += fmt.Sprintf("%v: %d stacks\n", user.String(), amount)
+    }
+    results, err = state.GetStacksForUser(m.GuildID, m.Mentions[0].String())
+    out = m.Mentions[0].String()
   default:
     err = fmt.Errorf("Bad command: %v", data[0])
   }
@@ -37,6 +48,11 @@ func (h Stack) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   // Mongo machine broke
   if err != nil {
     log.Printf("Error in query: %v", err)
+    return
+  }
+
+  if out == "" {
+    log.Println("No output for stack query")
     return
   }
 

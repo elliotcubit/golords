@@ -3,35 +3,34 @@ package state
 // Sets up connection and other variables for the rest of the library
 
 import (
+  "database/sql"
+  "fmt"
   "os"
   "log"
-  "context"
 
-  "go.mongodb.org/mongo-driver/mongo"
-  "go.mongodb.org/mongo-driver/mongo/options"
+  _ "github.com/lib/pq"
 )
 
-var client mongo.Client
-
-// Collections
-var plusplusColl *mongo.Collection
-var qmanagerColl *mongo.Collection
+var database *sql.DB
 
 func init(){
-  URI := os.Getenv("MONGO_URI")
-  if URI == "" {
-    log.Fatal("No URI found for MongoDB")
-  }
-  clientOptions := options.Client().ApplyURI(URI)
-  client, err := mongo.Connect(context.TODO(), clientOptions)
+  SQL_IP := os.Getenv("YUGABYTE_IP")
+  SQL_PORT := 5433
+  SQL_USER := os.Getenv("YUGABYTE_USER")
+  SQL_PASS := os.Getenv("YUGABYTE_PASS")
+  SQL_DB_NAME := os.Getenv("YUGABYTE_DB_NAME")
+
+  loginString := fmt.Sprintf(
+    "host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+    SQL_IP,
+    SQL_PORT,
+    SQL_USER,
+    SQL_PASS,
+    SQL_DB_NAME,
+  )
+
+  database, err := sql.Open("postgres", loginString)
   if err != nil {
-    log.Fatal(err)
+    log.Fatal("Failed to connect to SQL database")
   }
-  err = client.Ping(context.TODO(), nil)
-  if err != nil {
-    log.Fatal(err)
-  }
-  plusplusColl = client.Database("plusplus").Collection("plusplus")
-  qmanagerColl = client.Database("qmngr").Collection("qmngr")
-  log.Println("Successfully connected to MongoDB")
 }
