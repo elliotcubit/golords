@@ -18,8 +18,7 @@ A discord bot that has completely random features, but it's mine :)
 # TODO
 
 - Server-specific state for quotes and karma
+- Switch away from MongoDB
 - Implement !topstacks
-- Remove non-existant command prompts
-- Sort messages in help
-- _Maybe_ spin up a small help site instead of the text message. Don't really wanna pay for a domain name for something nobody actually uses
+- Sort help commands
 - Clean up message from !contribute
