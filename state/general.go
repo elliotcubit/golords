@@ -29,7 +29,8 @@ func init(){
     SQL_DB_NAME,
   )
 
-  database, err := sql.Open("postgres", loginString)
+  var err error
+  database, err = sql.Open("postgres", loginString)
   if err != nil {
     log.Fatal("Failed to connect to SQL database")
   }

@@ -22,6 +22,7 @@ func (h AddQuote) Do(s *discordgo.Session, m *discordgo.MessageCreate){
       return
     }
     state.AddQuote(
+      m.GuildID,
       m.Author.String(),
       data[1],
       string(m.Timestamp),

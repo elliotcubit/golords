@@ -80,7 +80,7 @@ func punish(s *discordgo.Session, m *discordgo.MessageCreate){
     return
   }
 
-  state.MinusMinus(m.Author.Discriminator, 3)
+  state.UpdateStacks(m.GuildID, m.Author.String(), -3)
   pingString := fmt.Sprintf("<@%s> fucked up. Minus 3 stacks.", m.Author.ID)
   s.ChannelMessageSend(m.ChannelID, pingString)
 }

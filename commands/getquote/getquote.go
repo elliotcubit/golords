@@ -5,6 +5,7 @@ import (
   "github.com/bwmarrin/discordgo"
   "golords/state"
   "fmt"
+  "log"
   "time"
 )
 
@@ -17,7 +18,11 @@ func init(){
 type GetQuote struct{}
 
 func (h GetQuote) Do(s *discordgo.Session, m *discordgo.MessageCreate){
-  q := state.GetRandomQuote()
+  q, err := state.GetRandomQuote()
+  if err != nil {
+    log.Println("Couldn't fetch quote from DB")
+    return
+  }
   t, _ := time.Parse(time.RFC3339, q.Timestamp) // TODO error checking
   ts := fmt.Sprintf("%d-%d-%d", t.Year(), t.Month(), t.Day())
   msg := fmt.Sprintf("\"%v\" added by %v on %v", q.Text, q.AddedBy, ts)

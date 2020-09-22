@@ -27,7 +27,11 @@ func (h Stack) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   switch data[0] {
   case "topstacks":
     // TODO specify how many with command
-    results, err = state.GetTopNStacks(5)
+    results, err := state.GetTopNStacks(m.GuildID, 5)
+    if err != nil {
+      log.Println(err)
+      return
+    }
     for user, amount := range results {
       out += fmt.Sprintf("%v: %d stacks\n", user, amount)
     }
@@ -37,10 +41,12 @@ func (h Stack) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     // SELECT * FROM _ WHERE --- OR --- OR --- OR --- OR
     for _, user := range m.Mentions {
       amount, err := state.GetStacksForUser(m.GuildID, user.String())
+      if err != nil {
+        log.Println(err)
+        return
+      }
       out += fmt.Sprintf("%v: %d stacks\n", user.String(), amount)
     }
-    results, err = state.GetStacksForUser(m.GuildID, m.Mentions[0].String())
-    out = m.Mentions[0].String()
   default:
     err = fmt.Errorf("Bad command: %v", data[0])
   }
