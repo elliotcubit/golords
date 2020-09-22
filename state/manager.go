@@ -12,7 +12,7 @@ type Quote struct {
 }
 
 var createQuoteStatement string = `INSERT INTO quotes(serverID, userID, quote, timestamp) VALUES ('%s', '%s', '%s', '%s')`
-var getRandomQuoteStatement string = `SELECT userID, quote, timestamp FROM quotes ORDER BY RANDOM() LIMIT 1`
+var getRandomQuoteStatement string = `SELECT userID, quote, timestamp FROM quotes WHERE serverID='%s' ORDER BY RANDOM() LIMIT 1`
 
 func AddQuote(server, user, quote, timestamp string){
   _, err := database.Exec(fmt.Sprintf(createQuoteStatement, server, user, quote, timestamp))
@@ -21,9 +21,9 @@ func AddQuote(server, user, quote, timestamp string){
   }
 }
 
-func GetRandomQuote() (Quote, error) {
+func GetRandomQuote(serverID string) (Quote, error) {
   var result Quote
-  rows, err := database.Query(getRandomQuoteStatement)
+  rows, err := database.Query(getRandomQuoteStatement, serverID)
   if err != nil {
     return result, err
   }

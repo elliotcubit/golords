@@ -18,7 +18,7 @@ func init(){
 type GetQuote struct{}
 
 func (h GetQuote) Do(s *discordgo.Session, m *discordgo.MessageCreate){
-  q, err := state.GetRandomQuote()
+  q, err := state.GetRandomQuote(m.GuildID)
   if err != nil {
     log.Println("Couldn't fetch quote from DB")
     return
