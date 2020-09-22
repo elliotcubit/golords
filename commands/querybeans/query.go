@@ -33,7 +33,7 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
       return
     }
     for user, amount := range results {
-      out += fmt.Sprintf("%v: %d stacks\n", user, amount)
+      out += fmt.Sprintf("%v: %d beans\n", user, amount)
     }
   // TODO !mystacks; a health workaround with !stacks @me works at the moment
   case "beans":
@@ -45,7 +45,7 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
         log.Println(err)
         return
       }
-      out += fmt.Sprintf("%v: %d stacks\n", user.String(), amount)
+      out += fmt.Sprintf("%v: %d beans\n", user.String(), amount)
     }
   default:
     err = fmt.Errorf("Bad command: %v", data[0])
@@ -58,7 +58,7 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   }
 
   if out == "" {
-    log.Println("No output for stack query")
+    log.Println("No output for bean query")
     return
   }
 
