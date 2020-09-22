@@ -35,9 +35,9 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     }
     out += fmt.Sprintf("%s: %d beans\n", user, amount)
   case "topbeans":
-    amount, err := strconv.Atoi(data[1])
-    if err != nil {
-      amount = 5
+    amount := 5
+    if len(data) > 1 {
+      amount, err = strconv.Atoi(data[1])
     }
     results, err := state.GetTopNBeans(m.GuildID, amount)
     if err != nil {
