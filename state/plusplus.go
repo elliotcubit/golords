@@ -10,6 +10,7 @@ var updateStackRowStatement string = `UPDATE stacks SET amount=%d WHERE serverID
 var getTopStackRowStatement string = `SELECT userID, amount FROM stacks WHERE serverID='%s' ORDER BY amount DESC LIMIT %d`
 
 func GetStacksForUser(server, user string) (int, error) {
+    user = sanitizeName(user)
     var amount int;
     rows, err := database.Query(fmt.Sprintf(getStackRowStatement, server, user))
     if err != nil {
@@ -46,6 +47,7 @@ func GetTopNStacks(server string, n int) (map[string]int, error) {
 }
 
 func UpdateStacks(server, user string, amount int) (int, error) {
+  user = sanitizeName(user)
   var currentScore int;
   var updatedScore int;
   rows, err := database.Query(fmt.Sprintf(getStackRowStatement, server, user))
@@ -81,6 +83,7 @@ func UpdateStacks(server, user string, amount int) (int, error) {
 }
 
 func ppCreateUser(server, user string, amount int) error {
+  user = sanitizeName(user)
   _, err := database.Exec(fmt.Sprintf(createStackStatement, server, user, amount))
   return err
 }

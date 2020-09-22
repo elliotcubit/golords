@@ -6,12 +6,22 @@ import (
   "database/sql"
   "fmt"
   "os"
+  "strings"
   "log"
 
   _ "github.com/lib/pq"
 )
 
 var database *sql.DB
+
+// Return a name that doesn't have FUCKING quotes in it
+func sanitizeName(user string) string {
+  // Replace single quotes
+  s := strings.ReplaceAll(user, "'", "")
+  // Replace double quotes
+  s = strings.ReplaceAll(s, "\"", "")
+  return s
+}
 
 func init(){
   SQL_IP := os.Getenv("YUGABYTE_IP")

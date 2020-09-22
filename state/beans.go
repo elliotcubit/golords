@@ -10,6 +10,7 @@ var updateBeanRowStatement string = `UPDATE beans SET amount=%d WHERE serverID='
 var getTopBeanRowStatement string = `SELECT userID, amount FROM beans WHERE serverID='%s' ORDER BY amount DESC LIMIT %d`
 
 func GetBeansForUser(server, user string) (int, error) {
+    user = sanitizeName(user)
     var amount int;
     rows, err := database.Query(fmt.Sprintf(getBeanRowStatement, server, user))
     if err != nil {
@@ -46,7 +47,7 @@ func GetTopNBeans(server string, n int) (map[string]int, error) {
 }
 
 func UpdateBeans(server, user string, amount int) (int, error) {
-  fmt.Println("Adding %v beans to %v", amount, user)
+  user = sanitizeName(user)
   var currentScore int;
   var updatedScore int;
   rows, err := database.Query(fmt.Sprintf(getBeanRowStatement, server, user))
@@ -82,6 +83,7 @@ func UpdateBeans(server, user string, amount int) (int, error) {
 }
 
 func bbCreateUser(server, user string, amount int) error {
+  user = sanitizeName(user)
   _, err := database.Exec(fmt.Sprintf(createBeanStatement, server, user, amount))
   return err
 }
