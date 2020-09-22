@@ -26,6 +26,39 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   var out string
   var err error
   switch data[0] {
+  case "givebeans":
+    // !givebeans [amount] [user] ...
+    if len(data) < 3 {
+      return
+    }
+    // ping a person to give them bean
+    if len(m.Mentions) < 1 {
+      return
+    }
+    amount := 0
+    amount, err = strconv.Atoi(data[1])
+    if err != nil {
+      return
+    }
+    if amount <= 0 {
+      out += "That's kind of scummy"
+      break
+    }
+    recipient := m.Mentions[0]
+    recipientID := recipient.String()
+    donatorID := m.Author.String()
+
+    // Verify they have the necessary funds
+    donatorBalance, err := state.GetBeansForUser(m.GuildID, donatorID)
+    if err != nil {
+      return
+    }
+    if donatorBalance < amount {
+      out += fmt.Sprintf("Everyone point and laugh - <@%s> doesn't have enough money!", m.Author.ID)
+      break
+    }
+    // This should not have been split into it's own function but it's too late to go back
+    out += h.TransferBeans(donatorID, recipientID, m.GuildID, donatorBalance, amount)
   case "mybeans":
     user := m.Author.String()
     amount, err := state.GetBeansForUser(m.GuildID, user)
@@ -75,6 +108,32 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   }
 
   s.ChannelMessageSend(m.ChannelID, out)
+}
+
+func (h Bean) TransferBeans(don, rec, gid string, donb, amount int) string {
+  // Take money away from donator
+  donb, err1 := state.UpdateBeans(gid, don, -amount)
+  // If this fails just stop
+  if err1 != nil {
+    return "Bean transfer failed...!\n"
+  }
+  // Give money to recipient
+  recb, err2 := state.UpdateBeans(gid, rec, amount)
+  // This isn't good... try again and hope for the best?
+  if err2 != nil {
+    recb, err2 = state.UpdateBeans(gid, rec, amount)
+    // if we failed a second time try to give back the money
+    // but don't make any promises
+    if err2 != nil {
+      donb, err1 = state.UpdateBeans(gid, don, amount)
+      return "Bean transfer failed...!\n"
+    }
+  }
+  s := ""
+  s += "Bean transfer successfuly.\n"
+  s += fmt.Sprintf("%s now has %d beans, while\n", don, donb)
+  s += fmt.Sprintf("%s now has %d beans.\n", rec, recb)
+  return s
 }
 
 func (h Bean) Help() string {
