@@ -92,6 +92,6 @@ func punish(s *discordgo.Session, m *discordgo.MessageCreate, amount int){
     return
   }
   state.UpdateBeans(m.GuildID, m.Author.String(), amount)
-  pingString := fmt.Sprintf("<@%s> fucked up. -1 stacks.", m.Author.ID)
+  pingString := fmt.Sprintf("<@%s> fucked up. -%d beans.", m.Author.ID, amount)
   s.ChannelMessageSend(m.ChannelID, pingString)
 }
