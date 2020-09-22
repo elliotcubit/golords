@@ -27,21 +27,18 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   var err error
   switch data[0] {
   case "givebeans":
-    log.Printf("givebeans entered. data: %v", data)
+    data = strings.SplitN(m.Content, " ", 3)
     // !givebeans [amount] [user] ...
     if len(data) < 3 {
-      log.Println("Exiting due to not enough args")
       return
     }
     // ping a person to give them bean
     if len(m.Mentions) < 1 {
-      log.Println("Exiting due to not enough mentions")
       return
     }
     amount := 0
     amount, err = strconv.Atoi(data[1])
     if err != nil {
-      log.Println("Exiting due to strconv error")
       return
     }
     if amount <= 0 {
@@ -59,7 +56,6 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
       break
     }
     if donatorBalance < amount {
-      log.Println("Exiting due to donator's balance not high enough")
       out += fmt.Sprintf("Everyone point and laugh - <@%s> doesn't have enough money!", m.Author.ID)
       break
     }
