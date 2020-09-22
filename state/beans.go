@@ -9,6 +9,11 @@ var getBeanRowStatement string = `SELECT amount FROM beans WHERE serverID='%s' A
 var updateBeanRowStatement string = `UPDATE beans SET amount=%d WHERE serverID='%s' AND userID='%s'`
 var getTopBeanRowStatement string = `SELECT userID, amount FROM beans WHERE serverID='%s' ORDER BY amount DESC LIMIT %d`
 
+type BeanData struct{
+  User string
+  Amount int
+}
+
 func GetBeansForUser(server, user string) (int, error) {
     user = sanitizeName(user)
     var amount int;
@@ -27,10 +32,10 @@ func GetBeansForUser(server, user string) (int, error) {
     return amount, nil
 }
 
-func GetTopNBeans(server string, n int) (map[string]int, error) {
+func GetTopNBeans(server string, n int) ([]*BeanData, error) {
   var user string
   var amount int
-  result := make(map[string]int, 0)
+  result := make([]*BeanData, 0)
   rows, err := database.Query(fmt.Sprintf(getTopBeanRowStatement, server, n))
   if err != nil {
     return result, err
@@ -41,7 +46,7 @@ func GetTopNBeans(server string, n int) (map[string]int, error) {
     if err != nil {
       return result, err
     }
-    result[user] = amount
+    result = append(result, &BeanData{User: user, Amount: amount})
   }
   return result, nil
 }

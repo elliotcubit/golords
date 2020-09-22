@@ -4,6 +4,7 @@ import (
   "strings"
   "fmt"
   "log"
+  "strconv"
 
   "golords/state"
   "golords/handlers"
@@ -25,17 +26,28 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   var out string
   var err error
   switch data[0] {
-  case "topbeans":
-    // TODO specify how many with command
-    results, err := state.GetTopNBeans(m.GuildID, 5)
+  case "mybeans":
+    user := m.Author.String()
+    amount, err := state.GetBeansForUser(m.GuildID, user)
     if err != nil {
       log.Println(err)
       return
     }
-    for user, amount := range results {
-      out += fmt.Sprintf("%v: %d beans\n", user, amount)
+    out += fmt.Sprintf("%s: %d beans\n", user, amount)
+  case "topbeans":
+    amount, err := strconv.Atoi(data[1])
+    if err != nil {
+      amount = 5
     }
-  // TODO !mystacks; a health workaround with !stacks @me works at the moment
+    results, err := state.GetTopNBeans(m.GuildID, amount)
+    if err != nil {
+      log.Println(err)
+      return
+    }
+
+    for _, data := range results {
+      out += fmt.Sprintf("%v: %d beans\n", data.User, data.Amount)
+    }
   case "beans":
     // TODO this only really needs one query
     // SELECT * FROM _ WHERE --- OR --- OR --- OR --- OR
@@ -45,7 +57,7 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
         log.Println(err)
         return
       }
-      out += fmt.Sprintf("%v: %d beans\n", user.String(), amount)
+      out += fmt.Sprintf("%s: %d beans\n", user.String(), amount)
     }
   default:
     err = fmt.Errorf("Bad command: %v", data[0])
@@ -70,5 +82,5 @@ func (h Bean) Help() string {
 }
 
 func (h Bean) Prefixes() []string {
-  return []string{"topbeans", "beans"}
+  return []string{"topbeans", "beans", "mybeans"}
 }
