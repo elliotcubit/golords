@@ -11,7 +11,7 @@ var getTopBeanRowStatement string = `SELECT userID, amount FROM beans WHERE serv
 
 func GetBeansForUser(server, user string) (int, error) {
     var amount int;
-    rows, err := database.Query(fmt.Sprintf(getStackRowStatement, server, user))
+    rows, err := database.Query(fmt.Sprintf(getBeanRowStatement, server, user))
     if err != nil {
       return 0, err
     }
@@ -30,7 +30,7 @@ func GetTopNBeans(server string, n int) (map[string]int, error) {
   var user string
   var amount int
   result := make(map[string]int, 0)
-  rows, err := database.Query(fmt.Sprintf(getTopStackRowStatement, server, n))
+  rows, err := database.Query(fmt.Sprintf(getTopBeanRowStatement, server, n))
   if err != nil {
     return result, err
   }
@@ -48,7 +48,7 @@ func GetTopNBeans(server string, n int) (map[string]int, error) {
 func UpdateBeans(server, user string, amount int) (int, error) {
   var currentScore int;
   var updatedScore int;
-  rows, err := database.Query(fmt.Sprintf(getStackRowStatement, server, user))
+  rows, err := database.Query(fmt.Sprintf(getBeanRowStatement, server, user))
   if err != nil {
     return 0, err
   }
@@ -72,7 +72,7 @@ func UpdateBeans(server, user string, amount int) (int, error) {
   } else {
     updatedScore = currentScore + amount
     // Update the row
-    _, err := database.Exec(fmt.Sprintf(updateStackRowStatement, updatedScore, server, user))
+    _, err := database.Exec(fmt.Sprintf(updateBeanRowStatement, updatedScore, server, user))
     if err != nil {
       return 0, err
     }
@@ -81,6 +81,6 @@ func UpdateBeans(server, user string, amount int) (int, error) {
 }
 
 func bbCreateUser(server, user string, amount int) error {
-  _, err := database.Exec(fmt.Sprintf(createStackStatement, server, user, amount))
+  _, err := database.Exec(fmt.Sprintf(createBeanStatement, server, user, amount))
   return err
 }
