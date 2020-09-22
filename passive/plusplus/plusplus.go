@@ -75,7 +75,6 @@ func (h PlusPlus) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     }
     score, err := state.UpdateStacks(m.GuildID, user.String(), recentIncrement)
     if err != nil {
-      // Mongo machine broke
       return
     }
     outStr = outStr + fmt.Sprintf("%v now has %d stacks\n", user.String(), score)

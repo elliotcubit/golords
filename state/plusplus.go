@@ -7,7 +7,7 @@ import (
 var createStackStatement string = `INSERT INTO stacks(serverID, userID, amount) VALUES ('%s', '%s', %d)`
 var getStackRowStatement string = `SELECT amount FROM stacks WHERE serverID='%s' AND userID='%s'`
 var updateStackRowStatement string = `UPDATE stacks SET amount=%d WHERE serverID='%s' AND userID='%s'`
-var getTopStackRowStatement string = `SELECT userID, amount FROM stacks WHERE serverID='%s' ORDER BY amount LIMIT %d`
+var getTopStackRowStatement string = `SELECT userID, amount FROM stacks WHERE serverID='%s' ORDER BY amount DESC LIMIT %d`
 
 func GetStacksForUser(server, user string) (int, error) {
     var amount int;

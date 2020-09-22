@@ -20,6 +20,19 @@ func init(){
   SQL_PASS := os.Getenv("YUGABYTE_PASS")
   SQL_DB_NAME := os.Getenv("YUGABYTE_DB_NAME")
 
+  if SQL_IP == "" {
+    log.Fatalf("SQL_IP not set")
+  }
+  if SQL_USER == "" {
+    log.Fatalf("SQL_USER not set")
+  }
+  if SQL_PASS == "" {
+    log.Fatalf("SQL_PASS not set")
+  }
+  if SQL_DB_NAME == "" {
+    log.Fatalf("SQL_DB_NAME not set")
+  }
+
   loginString := fmt.Sprintf(
     "host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
     SQL_IP,
@@ -33,5 +46,7 @@ func init(){
   database, err = sql.Open("postgres", loginString)
   if err != nil {
     log.Fatal("Failed to connect to SQL database")
+  } else {
+    log.Println("Successfully connected to SQL database")
   }
 }
