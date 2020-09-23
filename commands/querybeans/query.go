@@ -99,6 +99,19 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     for _, data := range results {
       out += fmt.Sprintf("%v: %d beans\n", data.User, data.Amount)
     }
+  case "bottombeans":
+    amount := 5
+    if len(data) > 1 {
+      amount, err = strconv.Atoi(data[1])
+    }
+    results, err := state.GetBottomNBeans(m.GuildID, amount)
+    if err != nil {
+      log.Println(err)
+      return
+    }
+    for _, data := range results {
+      out += fmt.Sprintf("%v: %d beans\n", data.User, data.Amount)
+    }
   case "beans":
     // TODO this only really needs one query
     // SELECT * FROM _ WHERE --- OR --- OR --- OR --- OR
@@ -159,5 +172,11 @@ func (h Bean) Help() string {
 }
 
 func (h Bean) Prefixes() []string {
-  return []string{"topbeans", "beans", "mybeans", "givebeans"}
+  return []string{
+    "topbeans",
+    "bottombeans",
+    "beans",
+    "mybeans",
+    "givebeans",
+  }
 }
