@@ -8,6 +8,7 @@ var createBeanStatement string = `INSERT INTO beans(serverID, userID, amount) VA
 var getBeanRowStatement string = `SELECT amount FROM beans WHERE serverID='%s' AND userID='%s'`
 var updateBeanRowStatement string = `UPDATE beans SET amount=%d WHERE serverID='%s' AND userID='%s'`
 var getTopBeanRowStatement string = `SELECT userID, amount FROM beans WHERE serverID='%s' ORDER BY amount DESC LIMIT %d`
+var getBottomBeanRowStatement string = `SELECT userID, amount FROM beans WHERE serverID='%s' ORDER BY amount ASC LIMIT %d`
 
 type BeanData struct{
   User string
@@ -32,11 +33,31 @@ func GetBeansForUser(server, user string) (int, error) {
     return amount, nil
 }
 
+// FIXME: Top and Bottom should consolidate into just one function with an ascending flag
 func GetTopNBeans(server string, n int) ([]*BeanData, error) {
   var user string
   var amount int
   result := make([]*BeanData, 0)
   rows, err := database.Query(fmt.Sprintf(getTopBeanRowStatement, server, n))
+  if err != nil {
+    return result, err
+  }
+  defer rows.Close()
+  for rows.Next() {
+    err := rows.Scan(&user, &amount)
+    if err != nil {
+      return result, err
+    }
+    result = append(result, &BeanData{User: user, Amount: amount})
+  }
+  return result, nil
+}
+
+func GetBottomNBeans(server string, n int) ([]*BeanData, error) {
+  var user string
+  var amount int
+  result := make([]*BeanData, 0)
+  rows, err := database.Query(fmt.Sprintf(getBottomBeanRowStatement, server, n))
   if err != nil {
     return result, err
   }
