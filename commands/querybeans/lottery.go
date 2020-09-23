@@ -2,14 +2,18 @@ package querybeans
 
 import (
   "fmt"
+  "log"
   "math/rand"
   "time"
+
+  "golords/state"
 
   "github.com/bwmarrin/discordgo"
 )
 
 const ticketPrice = 500
 
+// runningLotteries[serverID] ~> Lottery{ServerID: serverID}
 var runningLotteries map[string]*Lottery
 
 func init(){
@@ -31,7 +35,6 @@ func (h Bean) StartBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate)
   serverID := m.GuildID
   if _, exists := runningLotteries[serverID]; exists {
     return "There is already a lottery running in this server.\nBuy a ticket with !buybeanticket"
-    return
   }
   newLottery := &Lottery{
     ServerID: serverID,
@@ -41,17 +44,19 @@ func (h Bean) StartBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate)
   // Mark ourselves as existing then wait
   runningLotteries[serverID] = newLottery
   go newLottery.AwaitBeanLottery()
+  return "Lottery has been started, a winner will be chosen in 30 minutes.\nYou can buy a ticket with !buybeanticket"
 }
 
 // Adds a new ticket to the bean lottery
 // after docking the entrant the price of the lottery
 func (h Bean) EnterBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate) string {
   serverID := m.GuildID
-  if lottery, exists := runningLotteries[serverID]; !exists {
+  lottery, exists := runningLotteries[serverID]
+  if !exists {
     return "There is no lottery running in this server currently.\n Start one with !startbeanlottery"
   }
   ticket := &LotteryTicket{
-    UserID: m.Author,
+    UserID: m.Author.String(),
   }
   // Do we want to limit people to one ticket?
   if lottery.InLottery(ticket) {
@@ -61,17 +66,18 @@ func (h Bean) EnterBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate)
   if err != nil {
     return "There was a problem entering you into the lottery"
   }
-  if balance < lotteryPrice {
-    return fmt.Sprintf("Sorry, but the lottery costs %d beans", lotterPrice)
+  if balance < ticketPrice {
+    return fmt.Sprintf("Sorry, but the lottery costs %d beans", ticketPrice)
   }
-  newBalance, err := state.UpdateBeans(serverID, ticket.UserID, balance-lotteryPrice)
+  _, err = state.UpdateBeans(serverID, ticket.UserID, balance-ticketPrice)
   if err != nil {
     return "There was a problem entering you into the lottery"
   }
-  l.MakeEntry(ticket)
+  lottery.MakeEntry(ticket)
+  return "You have been entered into the bean lottery."
 }
 
-func (l Lottery) InLottery(ticket *LotteryTicket){
+func (l Lottery) InLottery(ticket *LotteryTicket) bool {
   for _, entry := range l.Tickets {
     if entry.UserID == ticket.UserID {
       return true
@@ -89,17 +95,45 @@ func (l Lottery) AwaitBeanLottery(){
   l.ExecuteBeanLottery()
 }
 
+// Execute the results of a lottery.
+// If any DB call in this fails we're forced to keep retrying
+// Or the lottery won't execute and the state will be unrecoverable.
+// This is okay, because this function will only exist in a separate goroutine
 func (l Lottery) ExecuteBeanLottery(){
   // Select a random ticket
   index := rand.Intn(len(l.Tickets))
   randomTicket := l.Tickets[index]
-  // Pay it whatever THE_LOTTERY's current balance is
+
+  // Get THE_LOTTERY's current balance
   lotteryBalance, err := state.GetBeansForUser(l.ServerID, THE_LOTTERY)
-  if err != nil {
+  for ; err != nil ; {
+    log.Println("Couldn't get lottery's balance. Retrying in 30sec")
+    time.Sleep(30 * time.Second)
     lotteryBalance, err = state.GetBeansForUser(l.ServerID, THE_LOTTERY)
   }
 
-  // Set THE_LOTTERY's balance to zero
+  // Pay the winner
+  winnerBalance, err := state.GetBeansForUser(l.ServerID, randomTicket.UserID)
+  for ; err != nil ; {
+    log.Println("Couldn't get lottery winner's balance. Retrying in 30sec")
+    time.Sleep(30 * time.Second)
+    winnerBalance, err = state.GetBeansForUser(l.ServerID, randomTicket.UserID)
+  }
+  _, err = state.UpdateBeans(l.ServerID, randomTicket.UserID, winnerBalance+lotteryBalance)
+  for ; err != nil ; {
+    log.Println("Couldn't update lottery winner's balance. Retrying in 30sec")
+    time.Sleep(30 * time.Second)
+    _, err = state.UpdateBeans(l.ServerID, randomTicket.UserID, winnerBalance+lotteryBalance)
+  }
 
-  // Remove ourself from the parent lottery map
+  // Set THE_LOTTERY's balance to zero
+  _, err = state.UpdateBeans(l.ServerID, THE_LOTTERY, 0)
+  for ; err != nil ; {
+    log.Println("Couldn't update lottery winner's balance. Retrying in 30sec")
+    time.Sleep(30 * time.Second)
+    _, err = state.UpdateBeans(l.ServerID, THE_LOTTERY, 0)
+  }
+
+  // Remove ourself from the parent lottery map so a new lottery could start
+  delete(runningLotteries, l.ServerID)
 }
