@@ -43,7 +43,7 @@ func (h Bean) StartBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate)
   }
   // Mark ourselves as existing then wait
   runningLotteries[serverID] = newLottery
-  go newLottery.AwaitBeanLottery()
+  go newLottery.AwaitBeanLottery(s, m)
   return "Lottery has been started, a winner will be chosen in 30 minutes.\nYou can buy a ticket with !buybeanticket"
 }
 
@@ -90,16 +90,16 @@ func (l Lottery) MakeEntry(ticket *LotteryTicket){
   l.Tickets = append(l.Tickets, ticket)
 }
 
-func (l Lottery) AwaitBeanLottery(){
+func (l Lottery) AwaitBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate){
   time.Sleep(30 * time.Minute)
-  l.ExecuteBeanLottery()
+  l.ExecuteBeanLottery(s, m)
 }
 
 // Execute the results of a lottery.
 // If any DB call in this fails we're forced to keep retrying
 // Or the lottery won't execute and the state will be unrecoverable.
 // This is okay, because this function will only exist in a separate goroutine
-func (l Lottery) ExecuteBeanLottery(){
+func (l Lottery) ExecuteBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate){
   // Select a random ticket
   index := rand.Intn(len(l.Tickets))
   randomTicket := l.Tickets[index]
@@ -119,11 +119,11 @@ func (l Lottery) ExecuteBeanLottery(){
     time.Sleep(30 * time.Second)
     winnerBalance, err = state.GetBeansForUser(l.ServerID, randomTicket.UserID)
   }
-  _, err = state.UpdateBeans(l.ServerID, randomTicket.UserID, winnerBalance+lotteryBalance)
+  winnerBalance, err = state.UpdateBeans(l.ServerID, randomTicket.UserID, winnerBalance+lotteryBalance)
   for ; err != nil ; {
     log.Println("Couldn't update lottery winner's balance. Retrying in 30sec")
     time.Sleep(30 * time.Second)
-    _, err = state.UpdateBeans(l.ServerID, randomTicket.UserID, winnerBalance+lotteryBalance)
+    winnerBalance, err = state.UpdateBeans(l.ServerID, randomTicket.UserID, winnerBalance+lotteryBalance)
   }
 
   // Set THE_LOTTERY's balance to zero
@@ -136,4 +136,7 @@ func (l Lottery) ExecuteBeanLottery(){
 
   // Remove ourself from the parent lottery map so a new lottery could start
   delete(runningLotteries, l.ServerID)
+
+  // Send a message declaring the winner
+  s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%v has won %d beans in the lottery! Congratulations!", randomTicket.UserID, lotteryBalance))
 }
