@@ -129,7 +129,7 @@ func (l Lottery) ExecuteBeanLottery(s *discordgo.Session, m *discordgo.MessageCr
   // Set THE_LOTTERY's balance to zero
   _, err = state.UpdateBeans(l.ServerID, THE_LOTTERY, 0)
   for ; err != nil ; {
-    log.Println("Couldn't update lottery winner's balance. Retrying in 30sec")
+    log.Println("Couldn't set THE_LOTTERY's balance to zero. Retrying in 30sec")
     time.Sleep(30 * time.Second)
     _, err = state.UpdateBeans(l.ServerID, THE_LOTTERY, 0)
   }
