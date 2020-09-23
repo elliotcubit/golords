@@ -12,6 +12,10 @@ import (
   "github.com/bwmarrin/discordgo"
 )
 
+var bannedRecipients []string = []string{
+  "235088799074484224", // Rythmbot
+}
+
 func init(){
   handlers.RegisterActiveModule(
     Bean{},
@@ -48,6 +52,18 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
     recipient := m.Mentions[0]
     recipientID := recipient.String()
     donatorID := m.Author.String()
+
+    // Can we name loops/switches in go to prevent this?
+    stp := false
+    for _, bannedID := range bannedRecipients {
+      if recipient.ID == bannedID {
+        out += "You can't do that"
+        stp = true
+      }
+    }
+    if stp {
+      break
+    }
 
     // Verify they have the necessary funds
     donatorBalance, err := state.GetBeansForUser(m.GuildID, donatorID)
