@@ -16,6 +16,8 @@ var bannedRecipients []string = []string{
   "235088799074484224", // Rythmbot
 }
 
+var THE_LOTTERY string = "GolordsBot#2566"
+
 func init(){
   handlers.RegisterActiveModule(
     Bean{},
@@ -30,6 +32,11 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate){
   var out string
   var err error
   switch data[0] {
+  // Starts a bean lottery whose options will execute 30 minutes later
+  case "startbeanlottery":
+    out += h.StartBeanLottery(s, m)
+  case "buybeanticket":
+    out += h.EnterBeanLottery(s, m)
   case "givebeans":
     data = strings.SplitN(m.Content, " ", 3)
     // !givebeans [amount] [user] ...
