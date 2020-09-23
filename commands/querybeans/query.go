@@ -180,6 +180,8 @@ func (h Bean) Help() string {
 
 func (h Bean) Prefixes() []string {
   return []string{
+    "startbeanlottery",
+    "buybeanticket",
     "topbeans",
     "bottombeans",
     "beans",
