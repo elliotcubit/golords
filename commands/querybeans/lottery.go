@@ -41,7 +41,7 @@ func (h Bean) StartBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate,
 	runningLotteries[serverID] = newLottery
 	log.Printf("Started a lottery in server %s", serverID)
 	go newLottery.AwaitBeanLottery(s, m, timer)
-	return "Lottery has been started, a winner will be chosen in 30 minutes.\nYou can buy a ticket with !buybeanticket"
+	return fmt.Sprintf("Lottery has been started, a winner will be chosen in %d minutes.\nYou can buy a ticket with !buybeanticket", timer)
 }
 
 // Adds a new ticket to the bean lottery
