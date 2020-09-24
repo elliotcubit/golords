@@ -1,26 +1,26 @@
 package dndlookup
 
 import (
-  "strings"
-  "log"
-  "fmt"
+	"fmt"
+	"log"
+	"strings"
 
-  go5e "github.com/elliotcubit/go-5e-srd-api"
+	go5e "github.com/elliotcubit/go-5e-srd-api"
 )
 
 func doSpell(query string) string {
-  searchResults, err := go5e.SearchSpellByName(query)
-  if err != nil || searchResults.Count < 1 {
-    log.Println(err)
-    return ""
-  }
-  spellIndex := getBestMatch(query, searchResults)
-  spell, err := go5e.GetSpell(spellIndex)
-  if err != nil {
-    log.Println(err)
-    return ""
-  }
-  return formatSpell(spell)
+	searchResults, err := go5e.SearchSpellByName(query)
+	if err != nil || searchResults.Count < 1 {
+		log.Println(err)
+		return ""
+	}
+	spellIndex := getBestMatch(query, searchResults)
+	spell, err := go5e.GetSpell(spellIndex)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	return formatSpell(spell)
 }
 
 func formatSpell(spell go5e.Spell) string {
@@ -31,19 +31,19 @@ func formatSpell(spell go5e.Spell) string {
 
 	classesPPrint := ""
 
-  for _, val := range spell.Classes {
-    classesPPrint = classesPPrint + val.Name + " "
-  }
+	for _, val := range spell.Classes {
+		classesPPrint = classesPPrint + val.Name + " "
+	}
 
-  descStr := ""
-  higherStr := ""
+	descStr := ""
+	higherStr := ""
 
-  if len(spell.Desc) > 0{
-    descStr = spell.Desc[0]
-  }
-  if len(spell.HigherLevel) > 0{
-    higherStr = "At higher levels: " + spell.HigherLevel[0]
-  }
+	if len(spell.Desc) > 0 {
+		descStr = spell.Desc[0]
+	}
+	if len(spell.HigherLevel) > 0 {
+		higherStr = "At higher levels: " + spell.HigherLevel[0]
+	}
 	return fmt.Sprintf(formatString,
 		spell.Name,
 		spell.Level,
