@@ -150,20 +150,20 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func (h Bean) TransferBeans(don, rec, gid string, donb, amount int) string {
 	// Take money away from donator
-	donb, err1 := state.UpdateBeans(gid, don, -amount)
+	donb, err1 := state.AddBeans(gid, don, -amount)
 	// If this fails just stop
 	if err1 != nil {
 		return "Bean transfer failed...!\n"
 	}
 	// Give money to recipient
-	recb, err2 := state.UpdateBeans(gid, rec, amount)
+	recb, err2 := state.AddBeans(gid, rec, amount)
 	// This isn't good... try again and hope for the best?
 	if err2 != nil {
-		recb, err2 = state.UpdateBeans(gid, rec, amount)
+		recb, err2 = state.AddBeans(gid, rec, amount)
 		// if we failed a second time try to give back the money
 		// but don't make any promises
 		if err2 != nil {
-			donb, err1 = state.UpdateBeans(gid, don, amount)
+			donb, err1 = state.AddBeans(gid, don, amount)
 			return "Bean transfer failed...!\n"
 		}
 	}

@@ -85,7 +85,7 @@ func reward(s *discordgo.Session, m *discordgo.MessageCreate, amount int) {
 		return
 	}
 	// No message for rewards
-	state.UpdateBeans(m.GuildID, m.Author.String(), amount)
+	state.AddBeans(m.GuildID, m.Author.String(), amount)
 }
 
 func punish(s *discordgo.Session, m *discordgo.MessageCreate, amount int) {
@@ -93,7 +93,7 @@ func punish(s *discordgo.Session, m *discordgo.MessageCreate, amount int) {
 		log.Println("An error was made in counting, but the message doesn't seem to have an author to punish")
 		return
 	}
-	state.UpdateBeans(m.GuildID, m.Author.String(), amount)
+	state.AddBeans(m.GuildID, m.Author.String(), amount)
 	pingString := fmt.Sprintf("<@%s> fucked up. -%d beans.", m.Author.ID, amount)
 	s.ChannelMessageSend(m.ChannelID, pingString)
 }

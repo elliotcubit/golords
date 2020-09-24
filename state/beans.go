@@ -72,7 +72,7 @@ func GetBottomNBeans(server string, n int) ([]*BeanData, error) {
 	return result, nil
 }
 
-func UpdateBeans(server, user string, amount int) (int, error) {
+func AddBeans(server, user string, amount int) (int, error) {
 	user = sanitizeName(user)
 	var currentScore int
 	var updatedScore int
