@@ -32,8 +32,9 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var out string
 	var err error
 	switch data[0] {
+	case "beanbet":
+		out += BetBeanHandler(s, m)
 	case "beanrisk":
-		data = strings.SplitN(m.Content, " ", 2)
 		if len(data) < 2 {
 			out += "usage: !beanrisk [currentNumber]"
 			break
@@ -47,12 +48,12 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Starts a bean lottery whose options will execute 30 minutes later
 	case "startbeanlottery":
 		data = strings.SplitN(m.Content, " ", 2)
-		timer := 30
+		timer := 5
 		if len(data) > 1 {
 			// I think Atoi will set timer to 0 on fails
 			timer, err = strconv.Atoi(data[1])
 			if err != nil {
-				timer = 30
+				timer = 5
 			}
 		}
 		out += h.StartBeanLottery(s, m, timer)
@@ -209,5 +210,6 @@ func (h Bean) Prefixes() []string {
 		"mybeans",
 		"givebeans",
 		"beanrisk",
+		"beanbet",
 	}
 }
