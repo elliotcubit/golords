@@ -26,8 +26,8 @@ type Lottery struct {
 	Tickets   []string
 }
 
-// Start a goroutine that waits 30 mins
-func (h Bean) StartBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate) string {
+// Start a goroutine that waits `timer` minutes
+func (h Bean) StartBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate, timer int) string {
 	serverID := m.GuildID
 	if _, exists := runningLotteries[serverID]; exists {
 		return "There is already a lottery running in this server.\nBuy a ticket with !buybeanticket"
@@ -40,7 +40,7 @@ func (h Bean) StartBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate)
 	// Mark ourselves as existing then wait
 	runningLotteries[serverID] = newLottery
 	log.Printf("Started a lottery in server %s", serverID)
-	go newLottery.AwaitBeanLottery(s, m)
+	go newLottery.AwaitBeanLottery(s, m, timer)
 	return "Lottery has been started, a winner will be chosen in 30 minutes.\nYou can buy a ticket with !buybeanticket"
 }
 
@@ -83,8 +83,8 @@ func (l *Lottery) MakeEntry(entrant string) {
 	l.Tickets = append(l.Tickets, entrant)
 }
 
-func (l *Lottery) AwaitBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate) {
-	time.Sleep(30 * time.Minute)
+func (l *Lottery) AwaitBeanLottery(s *discordgo.Session, m *discordgo.MessageCreate, timer int) {
+	time.Sleep(time.Duration(timer) * time.Minute)
 	l.ExecuteBeanLottery(s, m)
 }
 
