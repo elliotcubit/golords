@@ -32,8 +32,9 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var out string
 	var err error
 	switch data[0] {
+	case "beanbet":
+		out += BetBeanHandler(s, m)
 	case "beanrisk":
-		data = strings.SplitN(m.Content, " ", 2)
 		if len(data) < 2 {
 			out += "usage: !beanrisk [currentNumber]"
 			break
@@ -209,5 +210,6 @@ func (h Bean) Prefixes() []string {
 		"mybeans",
 		"givebeans",
 		"beanrisk",
+		"beanbet",
 	}
 }
