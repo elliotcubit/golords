@@ -33,7 +33,7 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var err error
 	switch data[0] {
 	case "beanbet":
-		return BetBeanHandler(s, m)
+		out += BetBeanHandler(s, m)
 	case "beanrisk":
 		if len(data) < 2 {
 			out += "usage: !beanrisk [currentNumber]"
