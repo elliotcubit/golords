@@ -24,7 +24,7 @@ type CoinGame struct {
 func BetBeanHandler(s *discordgo.Session, m *discordgo.MessageCreate) string {
   data := strings.SplitN(m.Content, " ", 3)
   if len(m.Mentions) < 1{
-    return ""
+    return "You must @ someone"
   }
   serverID := m.GuildID
   amount, _ := strconv.Atoi(data[1])
@@ -46,7 +46,35 @@ func BetBeanHandler(s *discordgo.Session, m *discordgo.MessageCreate) string {
   // Otherwise, create a new challenge.
   // Do not create a challenge of amount 0
   if amount == 0 {
-    return ""
+    return "You cannot challenge for 0 beans"
+  }
+
+  // Verify challenger has enough beans
+  challengersBalance, err := state.GetBeansForUser(serverID, challenger)
+  if err != nil {
+    return "There was a problem creating your challenge"
+  }
+  if challengersBalance < amount {
+    return "You do not have enough beans to make that bet"
+  }
+
+  // Verify challengee has enough beans
+  challengeesBalance, err := state.GetBeansForUser(serverID, challengee)
+  if err != nil {
+    return "There was a problem creating your challenge"
+  }
+  if challengeesBalance < amount {
+    return "The person you're challenging doesn't have enough beans to make that bet"
+  }
+
+  // Verify the game doesn't already exist
+  for _, game := range coinGames {
+    if game.ServerID == serverID &&
+    game.Challenger == challengee &&
+    game.Challengee == challenger &&
+    game.Amount == amount {
+      return "You have already made that challenge and it was not unaccepted"
+    }
   }
 
   game := &CoinGame{
@@ -56,7 +84,7 @@ func BetBeanHandler(s *discordgo.Session, m *discordgo.MessageCreate) string {
     Amount: amount,
   }
   coinGames = append(coinGames, game)
-  return fmt.Sprintf("Challenge created for %d beans. Accept by challenging back.", amount)
+  return fmt.Sprintf("Challenge created for %d beans. Accept by challenging back", amount)
 }
 
 func executeCoinGame(ind int) string {
@@ -77,9 +105,10 @@ func executeCoinGame(ind int) string {
   // Transfer funds
   _, err := state.AddBeans(game.ServerID, winner, game.Amount)
   if err != nil {
-    return "There was a problem finishing the game"
+    return "There was a problem finishing the challenge"
   }
   // We have to finish if this happens
+  // TODO move to goroutine to prevent bot hanging on this if something bad happens
   _, err = state.AddBeans(game.ServerID, loser, -game.Amount)
   for ; err != nil ; {
     log.Println("Problem resolving coin game, retrying in 30s")
