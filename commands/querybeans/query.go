@@ -32,6 +32,18 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var out string
 	var err error
 	switch data[0] {
+	case "beanrisk":
+		data = strings.SplitN(m.Content, " ", 2)
+		if len(data) < 2 {
+			out += "usage: !beanrisk [currentNumber]"
+			break
+		}
+		currentNumber, err := strconv.Atoi(data[1])
+		if err != nil {
+			break
+		}
+		risk := (currentNumber*(currentNumber+1))/2
+		out += fmt.Sprintf("The current amount you will lose for making a fucky wucky is: %d", risk)
 	// Starts a bean lottery whose options will execute 30 minutes later
 	case "startbeanlottery":
 		data = strings.SplitN(m.Content, " ", 2)
@@ -196,5 +208,6 @@ func (h Bean) Prefixes() []string {
 		"beans",
 		"mybeans",
 		"givebeans",
+		"beanrisk",
 	}
 }
