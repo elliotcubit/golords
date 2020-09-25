@@ -26,7 +26,7 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Help will not be its own module
 	if strings.HasPrefix(m.Content, "!help") {
-		embed := s.MessageEmbed{Color: 0x3498DB}
+		embed := &discordgo.MessageEmbed{Color: 0x3498DB}
 		embed.Title = "Commands"
 
 		helpMessage := ""
