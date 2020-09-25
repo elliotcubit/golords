@@ -166,7 +166,7 @@ func (h Bean) TransferBeans(don, rec, gid string, donb, amount int) string {
 		}
 	}
 	s := ""
-	s += "Bean transfer successfuly.\n"
+	s += "Bean transfer successful.\n"
 	s += fmt.Sprintf("%s now has %d beans, while\n", don, donb)
 	s += fmt.Sprintf("%s now has %d beans.\n", rec, recb)
 	return s

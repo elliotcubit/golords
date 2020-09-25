@@ -19,7 +19,7 @@ func (h Ball) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 		"It is certain.",
 		"It is decidedly so.",
 		"Without a doubt.",
-		"Yes -- deifinitely.",
+		"Yes -- definitely.",
 		"You may rely on it.",
 		"As I see it, yes.",
 		"Most likely.",
