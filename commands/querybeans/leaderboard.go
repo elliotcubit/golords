@@ -34,25 +34,10 @@ func sendBeanLeaderboard(s *discordgo.Session, m *discordgo.MessageCreate, ascen
       return
     }
   }
-  embed := &discordgo.MessageEmbed{Color:0x3498DB}
-  embed.Title = "Most Beans Leaderboard"
-  if !ascending {
-    embed.Title = "Least Beans Leaderboard"
-  }
-  if ascending {
-    embed.Description = fmt.Sprintf("These are the top %d users", amount)
-  } else {
-    embed.Description = fmt.Sprintf("These are the bottom %d users", amount)
-  }
-  var fields []*discordgo.MessageEmbedField
+  out := "```json"
   for ranking, data := range results {
-    f := &discordgo.MessageEmbedField{
-      Name: "bruh",
-      Value: fmt.Sprintf("%d | %-32s %8d beans\n", ranking, data.User, data.Amount),
-      Inline: true,
-    }
-    fields = append(fields, f)
+      out += fmt.Sprintf("%d | %-32s %8d beans\n", ranking, data.User, data.Amount),
   }
-  embed.Fields = fields
-  s.ChannelMessageSendEmbed(m.ChannelID, embed)
+  out += "```"
+  s.ChannelMessageSend(m.ChannelID, embed)
 }
