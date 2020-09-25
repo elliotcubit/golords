@@ -94,6 +94,8 @@ func punish(s *discordgo.Session, m *discordgo.MessageCreate, amount int) {
 		return
 	}
 	state.AddBeans(m.GuildID, m.Author.String(), amount)
-	pingString := fmt.Sprintf("<@%s> fucked up. -%d beans.", m.Author.ID, amount)
-	s.ChannelMessageSend(m.ChannelID, pingString)
+	embed := &discordgo.MessageEmbed{Color:0x3498DB}
+	embed.Title = "Uh Oh"
+	embed.Description = fmt.Sprintf("<@%s> spilled and lost %d beans!", m.Author.ID, amount)
+	s.ChannelMessageSendEmbed(m.ChannelID, embed)
 }
