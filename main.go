@@ -27,7 +27,7 @@ import (
 
 	// Passive Modules
 	_ "golords/passive/ian"
-	_ "golords/passive/learntocount"
+	learntocount "golords/passive/learntocount"
 	_ "golords/passive/plusplus"
 )
 
@@ -72,10 +72,13 @@ func main() {
 	rand.Seed(time.Now().Unix())
 
 	log.Println("Golords bot is alive. SIGINT exits.")
+	dg.ChannelMessageSend(learntocount.LtcChan, "=====GOLORDS BOT IS ALIVE=====")
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
+
+	dg.ChannelMessageSend(learntocount.LtcChan, "===THE BOT IS GOING OFFLINE===")
 
 	log.Println("SIGINT Registered. Shutting down.")
 	log.Println("Goodbye <3")

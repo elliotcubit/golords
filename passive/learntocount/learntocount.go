@@ -18,7 +18,7 @@ func init() {
 	)
 }
 
-const ltcChan = "755266387014058145"
+const LtcChan = "755266387014058145"
 const NOT_SET = -99999999
 const NEVER_SET = -99999998
 
@@ -28,7 +28,7 @@ type LearnToCount struct{}
 
 func (h LearnToCount) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Only operate in the learn to count channel
-	if m.ChannelID != ltcChan {
+	if m.ChannelID != LtcChan {
 		return
 	}
 
