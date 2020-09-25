@@ -26,12 +26,18 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Help will not be its own module
 	if strings.HasPrefix(m.Content, "!help") {
-		helpMessage := "Commands:\n"
+		embed := s.MessageEmbed{Color: 0x3498DB}
+		embed.Title = "Commands"
+
+		helpMessage := ""
 		for _, handler := range activeModules {
 			helpMessage += strings.Join(handler.Prefixes(), ", ")
-			helpMessage += ": " + handler.Help() + "\n"
+			helpMessage += ": " + handler.Help() + "\n\n"
 		}
-		s.ChannelMessageSend(m.ChannelID, helpMessage)
+
+		embed.Description = helpMessage
+
+		s.ChannelMessageSendEmbed(m.ChannelID, embed)
 	}
 
 	if strings.HasPrefix(m.Content, "!") {
