@@ -47,7 +47,7 @@ func sendBeanLeaderboard(s *discordgo.Session, m *discordgo.MessageCreate, ascen
   var fields []*discordgo.MessageEmbedField
   for ranking, data := range results {
     f := &discordgo.MessageEmbedField{
-      Name: "",
+      Name: "bruh",
       Value: fmt.Sprintf("%d | %-32s %8d beans\n", ranking, data.User, data.Amount),
       Inline: true,
     }
