@@ -36,7 +36,7 @@ func sendBeanLeaderboard(s *discordgo.Session, m *discordgo.MessageCreate, ascen
   }
   out := "```json"
   for ranking, data := range results {
-      out += fmt.Sprintf("%d | %-32s %8d beans\n", ranking, data.User, data.Amount),
+      out += fmt.Sprintf("%d | %-32s %8d beans\n", ranking, data.User, data.Amount)
   }
   out += "```"
   s.ChannelMessageSend(m.ChannelID, embed)
