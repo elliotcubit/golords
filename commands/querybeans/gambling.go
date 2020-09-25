@@ -70,10 +70,10 @@ func BetBeanHandler(s *discordgo.Session, m *discordgo.MessageCreate) string {
   // Verify the game doesn't already exist
   for _, game := range coinGames {
     if game.ServerID == serverID &&
-    game.Challenger == challengee &&
-    game.Challengee == challenger &&
+    game.Challenger == challenger &&
+    game.Challengee == challengee &&
     game.Amount == amount {
-      return "You have already made that challenge and it was not unaccepted"
+      return "You have already made that challenge and it was not accepted"
     }
   }
 
