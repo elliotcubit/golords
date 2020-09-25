@@ -14,7 +14,10 @@ func init() {
 type Contribute struct{}
 
 func (h Contribute) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
-	s.ChannelMessageSend(m.ChannelID, "You can contribute to golordbot here:\nhttps://github.com/elliotcubit/golords")
+	embed := &discordgo.MessageEmbed{Color: 0x3498DB}
+	embed.Title = "Contribute to golordsbot on GIthub"
+	embed.URL = "https://github.com/elliotcubit/golords"
+	s.ChannelMessageSendEmbed(m.ChannelID, embed)
 }
 
 func (h Contribute) Help() string {
