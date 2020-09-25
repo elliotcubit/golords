@@ -45,8 +45,8 @@ func BetBeanHandler(s *discordgo.Session, m *discordgo.MessageCreate) string {
 
   // Otherwise, create a new challenge.
   // Do not create a challenge of amount 0
-  if amount == 0 {
-    return "You cannot challenge for 0 beans"
+  if amount <= 0 {
+    return "You cannot challenge for <=0 beans"
   }
 
   // Verify challenger has enough beans
