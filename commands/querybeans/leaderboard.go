@@ -39,5 +39,5 @@ func sendBeanLeaderboard(s *discordgo.Session, m *discordgo.MessageCreate, ascen
       out += fmt.Sprintf("%d | %-32s %8d beans\n", ranking, data.User, data.Amount)
   }
   out += "```"
-  s.ChannelMessageSend(m.ChannelID, embed)
+  s.ChannelMessageSend(m.ChannelID, out)
 }
