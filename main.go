@@ -78,7 +78,9 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
+	// Give this message some time to send
 	dg.ChannelMessageSend(learntocount.LtcChan, "===THE BOT IS GOING OFFLINE===")
+	time.Sleep(5 * time.Second)
 
 	log.Println("SIGINT Registered. Shutting down.")
 	log.Println("Goodbye <3")
