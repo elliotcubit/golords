@@ -56,6 +56,13 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 				timer = 5
 			}
 		}
+		if timer < 2879 {
+			out += "Sorry. The lottery is currently disabled in preparation for something big.\n"
+			out += "You can call a lottery, but you must specify a time of at least 2880 minutes (48 hours)\n"
+			out += "Note that this is a fruitless endeavor, as this lottery will certaintly be reset before it is executed.\n"
+			out += "Godspeed."
+			break
+		}
 		out += h.StartBeanLottery(s, m, timer)
 	case "buybeanticket":
 		out += h.EnterBeanLottery(s, m)
