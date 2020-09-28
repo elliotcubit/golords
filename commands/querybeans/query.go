@@ -48,19 +48,16 @@ func (h Bean) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Starts a bean lottery whose options will execute 30 minutes later
 	case "startbeanlottery":
 		data = strings.SplitN(m.Content, " ", 2)
-		timer := 5
+		timer := 15
 		if len(data) > 1 {
 			// I think Atoi will set timer to 0 on fails
 			timer, err = strconv.Atoi(data[1])
 			if err != nil {
-				timer = 5
+				timer = 15
 			}
 		}
-		if timer < 2879 {
-			out += "Sorry. The lottery is currently disabled in preparation for something big.\n"
-			out += "You can call a lottery, but you must specify a time of at least 2880 minutes (48 hours)\n"
-			out += "Note that this is a fruitless endeavor, as this lottery will certaintly be reset before it is executed.\n"
-			out += "Godspeed."
+		if timer < 15 {
+			out += "Lotteries must be at least 15 minutes long."
 			break
 		}
 		out += h.StartBeanLottery(s, m, timer)
